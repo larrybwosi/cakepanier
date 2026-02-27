@@ -10,20 +10,14 @@ export interface CartAddOn {
 
 export interface CartItem {
   id?: string;
-  productId: string;
+  productId: string;       // Dealio product CUID
+  variantId: string;       // Dealio variant CUID — required for inventory + orders
   productName: string;
   quantity: number;
   variantName?: string;
-  variantPrice: number;
+  variantPrice: number;    // Snapshot at add-to-cart time
   addOns: CartAddOn[];
   productImage?: string;
-}
-
-export interface LoyaltyConfig {
-  productId: string;
-  pointsPerItem: number;
-  bonusThreshold?: number;
-  bonusPoints?: number;
 }
 
 export const useCart = () => {
@@ -33,26 +27,26 @@ export const useCart = () => {
   const { toast } = useToast();
 
   const fetchCartItems = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) return;
 
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('cart_items')
-        .select('*');
-
+      const { data, error } = await supabase.from('cart_items').select('*');
       if (error) throw error;
 
-      const cartItems: CartItem[] = data?.map(item => ({
+      const cartItems: CartItem[] = (data ?? []).map(item => ({
         id: item.id,
         productId: item.product_id,
-        productName: item.product_id, // We'll map this properly
+        variantId: (item as any).variant_id ?? '',
+        productName: (item as any).product_name ?? item.product_id,
         quantity: item.quantity,
-        variantName: item.variant_name,
-        variantPrice: Number(item.variant_price),
-        addOns: (item.add_ons as unknown as CartAddOn[]) || []
-      })) || [];
+        variantName: item.variant_name ?? undefined,
+        variantPrice: Number(item.variant_price ?? 0),
+        addOns: (item.add_ons as unknown as CartAddOn[]) ?? [],
+      }));
 
       setItems(cartItems);
     } catch (error) {
@@ -63,7 +57,9 @@ export const useCart = () => {
   }, []);
 
   const fetchLoyaltyPoints = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) return;
 
     try {
@@ -72,111 +68,105 @@ export const useCart = () => {
         .select('total_points')
         .eq('user_id', session.user.id)
         .maybeSingle();
-
-      setLoyaltyPoints(data?.total_points || 0);
+      setLoyaltyPoints(data?.total_points ?? 0);
     } catch (error) {
       console.error('Error fetching loyalty points:', error);
     }
   }, []);
 
   const addToCart = async (item: Omit<CartItem, 'id'>) => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) {
       toast({
-        title: "Please sign in",
-        description: "You need to be logged in to add items to cart",
-        variant: "destructive",
+        title: 'Please sign in',
+        description: 'You need to be logged in to add items to cart',
+        variant: 'destructive',
       });
       return false;
     }
 
+    // Real-time inventory check before adding
     try {
-      const { error } = await supabase
-        .from('cart_items')
-        .upsert({
-          user_id: session.user.id,
-          product_id: item.productId,
-          quantity: item.quantity,
-          variant_name: item.variantName,
-          variant_price: item.variantPrice,
-          add_ons: item.addOns as unknown as any
+      const invRes = await fetch('/api/dealio/inventory/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ variantId: item.variantId }),
+      });
+      const invJson = await invRes.json();
+      if (!invJson.data?.isAvailable) {
+        toast({
+          title: 'Out of stock',
+          description: 'This item is no longer available.',
+          variant: 'destructive',
         });
+        return false;
+      }
+    } catch {
+      // Proceed if inventory check fails (fail-open)
+    }
+
+    try {
+      const { error } = await supabase.from('cart_items').upsert({
+        user_id: session.user.id,
+        product_id: item.productId,
+        variant_id: item.variantId,
+        product_name: item.productName,
+        quantity: item.quantity,
+        variant_name: item.variantName,
+        variant_price: item.variantPrice,
+        add_ons: item.addOns as unknown as any,
+      });
 
       if (error) throw error;
-
       await fetchCartItems();
-      toast({
-        title: "Added to cart",
-        description: "Item has been added to your cart",
-      });
+      toast({ title: 'Added to cart', description: `${item.productName} added to your cart` });
       return true;
     } catch (error) {
       console.error('Error adding to cart:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add item to cart",
-        variant: "destructive",
-      });
+      toast({ title: 'Error', description: 'Failed to add item to cart', variant: 'destructive' });
       return false;
     }
   };
 
   const updateQuantity = async (itemId: string, quantity: number) => {
-    if (quantity <= 0) {
-      return removeItem(itemId);
-    }
-
+    if (quantity <= 0) return removeItem(itemId);
     try {
       const { error } = await supabase
         .from('cart_items')
         .update({ quantity })
         .eq('id', itemId);
-
       if (error) throw error;
       await fetchCartItems();
     } catch (error) {
       console.error('Error updating quantity:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update item quantity",
-        variant: "destructive",
-      });
+      toast({ title: 'Error', description: 'Failed to update item quantity', variant: 'destructive' });
     }
   };
 
   const removeItem = async (itemId: string) => {
     try {
-      const { error } = await supabase
-        .from('cart_items')
-        .delete()
-        .eq('id', itemId);
-
+      const { error } = await supabase.from('cart_items').delete().eq('id', itemId);
       if (error) throw error;
       await fetchCartItems();
-      toast({
-        title: "Item removed",
-        description: "Item has been removed from your cart",
-      });
+      toast({ title: 'Item removed', description: 'Item has been removed from your cart' });
     } catch (error) {
       console.error('Error removing item:', error);
-      toast({
-        title: "Error",
-        description: "Failed to remove item",
-        variant: "destructive",
-      });
+      toast({ title: 'Error', description: 'Failed to remove item', variant: 'destructive' });
     }
   };
 
   const clearCart = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
     if (!session) return;
-
     try {
       const { error } = await supabase
         .from('cart_items')
         .delete()
         .eq('user_id', session.user.id);
-
       if (error) throw error;
       setItems([]);
     } catch (error) {
@@ -184,17 +174,13 @@ export const useCart = () => {
     }
   };
 
-  const getCartTotal = () => {
-    return items.reduce((total, item) => {
-      const itemPrice = item.variantPrice;
-      const addOnsPrice = item.addOns.reduce((sum, addon) => sum + addon.price, 0);
-      return total + (itemPrice + addOnsPrice) * item.quantity;
+  const getCartTotal = () =>
+    items.reduce((total, item) => {
+      const addOnsPrice = item.addOns.reduce((sum, a) => sum + a.price, 0);
+      return total + (item.variantPrice + addOnsPrice) * item.quantity;
     }, 0);
-  };
 
-  const getItemCount = () => {
-    return items.reduce((count, item) => count + item.quantity, 0);
-  };
+  const getItemCount = () => items.reduce((count, item) => count + item.quantity, 0);
 
   useEffect(() => {
     fetchCartItems();
