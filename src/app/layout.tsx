@@ -3,6 +3,7 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
+import { DealioCustomerSync } from '@/components/DealioCustomerSync';
 
 export const metadata: Metadata = {
   title: {
@@ -171,6 +172,7 @@ export default function RootLayout({
     <html lang="en">
       <GoogleAnalytics gaId="G-L0MS04RB1W" />
       <body className={`antialiased font-sans bg-gray-50`}>
+        <DealioCustomerSync />
         <>{children}</>
         <Footer />
       </body>
