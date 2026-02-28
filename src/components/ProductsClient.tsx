@@ -1,310 +1,253 @@
-'use client';
+"use client";
 
-import { useState, useMemo } from 'react';
-import { Star, Search, Filter, Heart, ShoppingCart, Grid, List } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useState, useEffect, useCallback, useTransition } from "react";
+import { useInView } from "react-intersection-observer";
+import { useQueryState, parseAsInteger, parseAsString } from "nuqs";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { useRouter } from 'next/navigation';
-import type { DealioProduct, DealioCategory } from '@/lib/dealio/types';
+  Search,
+  SlidersHorizontal,
+  PackageSearch,
+  Loader2,
+  Grid3x3,
+  List,
+} from "lucide-react";
 
-interface Props {
-  products: DealioProduct[];
-  categories: DealioCategory[];
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+
+import type { DealioProduct } from "@/lib/dealio/types";
+import { loadMoreProducts } from "@/lib/dealio/list.actions";
+import { ProductCard } from "@/components/ProductCard";
+
+interface ProductsClientProps {
+  initialProducts: DealioProduct[];
+  categories: any[];
   pagination: {
     page: number;
-    limit: number;
-    total: number;
     totalPages: number;
   };
 }
 
-export function ProductsClient({ products, categories, pagination }: Props) {
-  const router = useRouter();
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [favorites, setFavorites] = useState<string[]>([]);
+export function ProductsClient({
+  initialProducts,
+  categories,
+  pagination: initialPagination,
+}: ProductsClientProps) {
+  // 1. nuqs setup: Sync filters and page state to the URL
+  const [pageUrl, setPageUrl] = useQueryState(
+    "page",
+    parseAsInteger
+      .withDefault(1)
+      .withOptions({ shallow: true, history: "replace" }),
+  );
+  const [categoryUrl, setCategoryUrl] = useQueryState(
+    "category",
+    parseAsString,
+  );
+  const [searchUrl, setSearchUrl] = useQueryState("search", parseAsString);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  const sortOptions = [
-    { value: 'name', label: 'Name (A-Z)' },
-    { value: 'price-low', label: 'Price (Low to High)' },
-    { value: 'price-high', label: 'Price (High to Low)' },
-  ];
+  // 2. Internal State for the infinite list
+  const [products, setProducts] = useState<DealioProduct[]>(initialProducts);
+  const [localPage, setLocalPage] = useState(initialPagination.page);
+  const [hasMore, setHasMore] = useState(
+    initialPagination.page < initialPagination.totalPages,
+  );
+  const [isPending, startTransition] = useTransition();
 
-  const toggleFavorite = (productId: string) => {
-    setFavorites(prev =>
-      prev.includes(productId) ? prev.filter(id => id !== productId) : [...prev, productId],
-    );
-  };
+  // 3. Intersection Observer
+  const { ref, inView } = useInView({
+    rootMargin: "400px",
+  });
 
-  const getLowestPrice = (product: DealioProduct): number => {
-    if (!product.variants?.length) return 0;
-    return Math.min(...product.variants.map(v => v.price));
-  };
+  // 4. Reset state if the server passes new initial products
+  useEffect(() => {
+    setProducts(initialProducts);
+    setLocalPage(initialPagination.page);
+    setHasMore(initialPagination.page < initialPagination.totalPages);
+  }, [initialProducts, initialPagination]);
 
-  const getPrimaryImage = (product: DealioProduct): string => {
-    const primary = product.images?.find(img => img.isPrimary);
-    return primary?.url ?? product.imageUrls?.[0] ?? '/placeholder.svg?height=300&width=400';
-  };
+  // 5. Load more logic
+  const loadMore = useCallback(async () => {
+    if (isPending || !hasMore) return;
 
-  const isInStock = (product: DealioProduct): boolean =>
-    product.variants?.some(v => v.isAvailable) ?? false;
+    const nextPage = localPage + 1;
 
-  const filteredAndSorted = useMemo(() => {
-    let filtered = products?.filter(p => {
-      const matchesSearch =
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        categoryFilter === 'all' || p.categoryId === categoryFilter;
-      return matchesSearch && matchesCategory;
-    });
+    startTransition(async () => {
+      const response = await loadMoreProducts(nextPage, categoryUrl, searchUrl);
 
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'name':
-          return a.name.localeCompare(b.name);
-        case 'price-low':
-          return getLowestPrice(a) - getLowestPrice(b);
-        case 'price-high':
-          return getLowestPrice(b) - getLowestPrice(a);
-        default:
-          return 0;
+      if (response.success && response.data) {
+        setProducts((prev) => [...prev, ...response.data.products]);
+        setLocalPage(nextPage);
+        setHasMore(nextPage < response.data.pagination.totalPages);
+        setPageUrl(nextPage);
       }
     });
+  }, [localPage, hasMore, isPending, categoryUrl, searchUrl, setPageUrl]);
 
-    return filtered;
-  }, [products, searchTerm, categoryFilter, sortBy]);
+  useEffect(() => {
+    if (inView) {
+      loadMore();
+    }
+  }, [inView, loadMore]);
 
   return (
-    <>
-      {/* Filters */}
-      <div className="mb-8 space-y-4">
-        <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full lg:w-96">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
+    <div className="min-h-screen bg-background pb-20">
+      {/* Header & Filters */}
+      <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-xl border-b border-border/40 mb-8 px-4 py-4 shadow-sm">
+        <div className="container mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <div className="relative w-full sm:max-w-md group">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+              <Search className="h-4 w-4" />
+            </div>
+            <input
+              type="text"
               placeholder="Search products..."
-              value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
-              className="pl-10"
+              className="w-full pl-10 pr-4 py-2.5 bg-muted/50 border border-border/60 rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-200"
+              value={searchUrl || ""}
+              onChange={(e) => {
+                setSearchUrl(e.target.value || null);
+                setPageUrl(1);
+              }}
             />
           </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-            >
-              <Grid className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">Filters:</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-              <SelectTrigger className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
-                {categories.map(cat => (
-                  <SelectItem key={cat.id} value={cat.id}>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="relative flex-1 sm:flex-none group">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground group-focus-within:text-primary transition-colors">
+                <SlidersHorizontal className="h-4 w-4" />
+              </div>
+              <select
+                className="w-full sm:w-48 pl-10 pr-8 py-2.5 bg-muted/50 border border-border/60 rounded-lg text-sm text-foreground appearance-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all duration-200 cursor-pointer"
+                value={categoryUrl || ""}
+                onChange={(e) => {
+                  setCategoryUrl(e.target.value || null);
+                  setPageUrl(1);
+                }}
+              >
+                <option value="">All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
                     {cat.name}
-                  </SelectItem>
+                  </option>
                 ))}
-              </SelectContent>
-            </Select>
+              </select>
+              {/* Custom dropdown arrow to match select styling */}
+              <div className="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none text-muted-foreground">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+            </div>
 
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {sortOptions.map(o => (
-                  <SelectItem key={o.value} value={o.value}>
-                    {o.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* View mode toggle */}
+            <div className="flex items-center border border-border/60 rounded-lg overflow-hidden shrink-0">
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`rounded-none px-3 h-9 ${
+                  viewMode === "grid" ? "bg-muted/50" : ""
+                }`}
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid3x3 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className={`rounded-none px-3 h-9 ${
+                  viewMode === "list" ? "bg-muted/50" : ""
+                }`}
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
-
-        <div className="text-sm text-muted-foreground">
-          Showing {filteredAndSorted.length} of {pagination.total} products
-        </div>
       </div>
 
-      {/* Product Grid / List */}
-      <div
-        className={
-          viewMode === 'grid'
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            : 'space-y-4'
-        }
-      >
-        {filteredAndSorted.map(product => {
-          const inStock = isInStock(product);
-          const lowestPrice = getLowestPrice(product);
-          const image = getPrimaryImage(product);
-          const hasMultipleVariants = product.variants?.length > 1;
+      <div className="container mx-auto px-4">
+        {/* Product Grid */}
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8"
+              : "flex flex-col gap-4"
+          }
+        >
+          {products.map((product, index) => (
+            <ProductCard
+              key={`${product.id}-${index}`}
+              product={product}
+              viewMode={viewMode}
+            />
+          ))}
+        </div>
 
-          return (
-            <Card
-              key={product.id}
-              className={`group cursor-pointer hover:shadow-lg transition-all duration-300 ${
-                !inStock ? 'opacity-60' : ''
-              } ${viewMode === 'list' ? 'flex flex-row' : ''}`}
-              onClick={() => router.push(`/products/${product.id}`)}
+        {/* Loading Sentinel */}
+        {hasMore && (
+          <div ref={ref} className="w-full flex justify-center py-16">
+            {isPending ? (
+              <div className="flex flex-col items-center gap-3">
+                <Loader2 className="h-8 w-8 text-primary animate-spin" />
+                <span className="text-sm font-medium text-muted-foreground animate-pulse">
+                  Loading more products...
+                </span>
+              </div>
+            ) : (
+              <div className="h-8 w-8 border-4 border-transparent rounded-full" /> // Invisible spacer to maintain height before load triggers
+            )}
+          </div>
+        )}
+
+        {/* End of Catalog State */}
+        {!hasMore && products.length > 0 && (
+          <div className="flex flex-col items-center justify-center py-16 opacity-60">
+            <Separator className="w-24 mb-6" />
+            <p className="text-muted-foreground text-sm font-medium tracking-wide">
+              You&apos;ve reached the end of the catalog.
+            </p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {products.length === 0 && !isPending && (
+          <div className="flex flex-col items-center justify-center py-32 px-4 text-center">
+            <div className="h-20 w-20 rounded-full bg-muted/50 flex items-center justify-center mb-6 border border-border/50 shadow-inner">
+              <PackageSearch className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              No products found
+            </h3>
+            <p className="text-muted-foreground max-w-md mb-8">
+              We couldn't find anything matching your current filters or search
+              terms. Try adjusting them to see more results.
+            </p>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchUrl(null);
+                setCategoryUrl(null);
+              }}
+              className="gap-2"
             >
-              <CardContent className={`p-0 ${viewMode === 'list' ? 'flex w-full' : ''}`}>
-                {/* Image */}
-                <div
-                  className={`relative overflow-hidden ${
-                    viewMode === 'list'
-                      ? 'w-48 h-32 shrink-0 rounded-l-lg'
-                      : 'w-full h-48 rounded-t-lg'
-                  }`}
-                >
-                  {product.isFeatured && (
-                    <div className="absolute top-2 left-2 z-10 bg-secondary text-secondary-foreground px-2 py-1 rounded-full text-xs font-medium">
-                      Featured
-                    </div>
-                  )}
-                  {!inStock && (
-                    <div className="absolute top-2 right-2 z-10 bg-destructive text-destructive-foreground px-2 py-1 rounded-full text-xs font-medium">
-                      Out of Stock
-                    </div>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="absolute top-2 right-2 z-10 p-1 h-8 w-8 bg-background/80 hover:bg-background"
-                    onClick={e => {
-                      e.stopPropagation();
-                      toggleFavorite(product.id);
-                    }}
-                  >
-                    <Heart
-                      className={`h-4 w-4 ${
-                        favorites.includes(product.id)
-                          ? 'fill-red-500 text-red-500'
-                          : 'text-muted-foreground'
-                      }`}
-                    />
-                  </Button>
-                  <img
-                    src={image}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-
-                {/* Info */}
-                <div className={`p-4 space-y-3 ${viewMode === 'list' ? 'flex-1' : ''}`}>
-                  <div className="flex items-start justify-between">
-                    <h3 className="text-lg font-display font-semibold text-foreground line-clamp-1">
-                      {product.name}
-                    </h3>
-                    <span className="text-lg font-bold text-primary shrink-0 ml-2">
-                      {hasMultipleVariants ? 'From ' : ''}Ksh {lowestPrice.toLocaleString()}
-                    </span>
-                  </div>
-
-                  <p
-                    className={`text-muted-foreground leading-relaxed ${
-                      viewMode === 'list' ? 'line-clamp-2' : 'line-clamp-3'
-                    }`}
-                  >
-                    {product.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-1">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="h-3 w-3 text-secondary fill-secondary"
-                        />
-                      ))}
-                    </div>
-                    <Badge variant="outline" className="text-xs">
-                      {product.category?.name ?? 'Uncategorized'}
-                    </Badge>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex-1"
-                      disabled={!inStock}
-                      onClick={e => {
-                        e.stopPropagation();
-                        router.push(`/products/${product.id}`);
-                      }}
-                    >
-                      View Details
-                    </Button>
-                    <Button
-                      size="sm"
-                      disabled={!inStock}
-                      onClick={e => {
-                        e.stopPropagation();
-                        router.push(`/products/${product.id}`);
-                      }}
-                    >
-                      <ShoppingCart className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
+              <Search className="h-4 w-4" />
+              Clear all filters
+            </Button>
+          </div>
+        )}
       </div>
-
-      {/* Empty state */}
-      {filteredAndSorted.length === 0 && (
-        <div className="text-center py-12">
-          <h3 className="text-xl font-semibold text-foreground mb-2">No products found</h3>
-          <p className="text-muted-foreground mb-4">
-            Try adjusting your search or filter criteria.
-          </p>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setSearchTerm('');
-              setCategoryFilter('all');
-            }}
-          >
-            Clear Filters
-          </Button>
-        </div>
-      )}
-    </>
+    </div>
   );
 }

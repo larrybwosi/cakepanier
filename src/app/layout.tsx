@@ -4,6 +4,7 @@ import './globals.css';
 import localFont from 'next/font/local';
 import Footer from '@/components/Footer';
 import { DealioCustomerSync } from '@/components/DealioCustomerSync';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 export const metadata: Metadata = {
   title: {
@@ -173,7 +174,7 @@ export default function RootLayout({
       <GoogleAnalytics gaId="G-L0MS04RB1W" />
       <body className={`antialiased font-sans bg-gray-50`}>
         <DealioCustomerSync />
-        <>{children}</>
+        <NuqsAdapter>{children}</NuqsAdapter>
         <Footer />
       </body>
     </html>

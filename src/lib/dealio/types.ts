@@ -46,6 +46,7 @@ export interface DealioProduct {
   isActive: boolean;
   isFeatured: boolean;
   tags: string[];
+  lowStockThreshold?: number;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,6 +1,7 @@
-import Header from '@/components/Header';
-import { ProductsClient } from '@/components/ProductsClient';
-import { getCatalogProducts, getCatalogCategories } from '@/lib/dealio/catalog';
+import type { Metadata } from "next";
+import Header from "@/components/Header";
+import { ProductsClient } from "@/components/ProductsClient";
+import { getCatalogProducts, getCatalogCategories } from "@/lib/dealio/catalog";
 
 interface SearchParams {
   page?: string;
@@ -8,9 +9,48 @@ interface SearchParams {
   search?: string;
 }
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) => {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+
+  const title = params.search
+    ? `Search: "${params.search}" | Our Products`
+    : params.category
+      ? `Browse by Category | Our Products`
+      : "Our Products | Artisan Breads, Pastries & Desserts";
+
+  const description =
+    "Discover our complete collection of artisan breads, pastries, and desserts, all made fresh daily with the finest ingredients.";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: "/products",
+    },
+  };
+}
+
+const Page = async ({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) => {
   const params = await searchParams;
 
   let productsRes;
@@ -27,8 +67,7 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) =
       getCatalogCategories(),
     ]);
   } catch (err) {
-    console.error('[products page] Dealio fetch failed:', err);
-    // Render a graceful error state without crashing
+    console.error("[products page] Dealio fetch failed:", err);
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -38,17 +77,23 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) =
               Unable to load products
             </h1>
             <p className="text-muted-foreground">
-              Our catalog is temporarily unavailable. Please try again in a moment.
+              Our catalog is temporarily unavailable. Please try again in a
+              moment.
             </p>
           </div>
         </main>
       </div>
     );
   }
-  // console.log('Fetched products:', JSON.stringify(productsRes, null, 2));
-  // console.log('Fetched categories:', categories);
 
-  // console.log(productsRes)
+  const pageTitle = params.search
+    ? `Results for "${params.search}"`
+    : params.category
+      ? `Browse Products`
+      : "Our Products";
+
+  const currentPage = params.page ? Number(params.page) : 1;
+  const totalPages = productsRes.pagination?.totalPages ?? 1;
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,19 +101,38 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) =
 
       <main className="pt-20 pb-12">
         <div className="container mx-auto px-4">
-          {/* Page Header */}
+          {/* Pagination link hints for crawlers */}
+          {currentPage > 1 && (
+            <link
+              rel="prev"
+              href={`/products?page=${currentPage - 1}${params.category ? `&category=${params.category}` : ""}${params.search ? `&search=${params.search}` : ""}`}
+            />
+          )}
+          {currentPage < totalPages && (
+            <link
+              rel="next"
+              href={`/products?page=${currentPage + 1}${params.category ? `&category=${params.category}` : ""}${params.search ? `&search=${params.search}` : ""}`}
+            />
+          )}
+
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-              Our <span className="text-primary">Products</span>
+              {params.search || params.category ? (
+                pageTitle
+              ) : (
+                <>
+                  Our <span className="text-primary">Products</span>
+                </>
+              )}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Discover our complete collection of artisan breads, pastries, and desserts,
-              all made fresh daily with the finest ingredients.
+              Discover our complete collection of artisan breads, pastries, and
+              desserts, all made fresh daily with the finest ingredients.
             </p>
           </div>
 
           <ProductsClient
-            products={productsRes.products}
+            initialProducts={productsRes.products}
             categories={categories}
             pagination={productsRes.pagination}
           />

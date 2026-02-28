@@ -46,6 +46,31 @@ export async function getCatalogProducts(
   return res.data
 }
 
+export async function getFeaturedCatalogProducts(
+  params: ProductsQueryParams = {},
+): Promise<DealioProductsResponse> {
+  const token = await getDealioToken();
+  const base = getBaseUrl();
+
+  const qs = new URLSearchParams();
+  if (params.page) qs.set('page', String(params.page));
+  if (params.limit) qs.set('limit', String(params.limit));
+  if (params.search) qs.set('search', params.search);
+  if (params.isFeatured !== undefined) qs.set('isFeatured', String(params.isFeatured));
+
+  const res = await dealioFetch<{ data: DealioProductsResponse }>(
+    `${base}/catalog/products?${qs.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    },
+  );
+  return res.data
+}
+
 export async function getCatalogProduct(productId: string): Promise<DealioProduct> {
   const token = await getDealioToken();
   const base = getBaseUrl();
@@ -63,6 +88,7 @@ export async function getCatalogProduct(productId: string): Promise<DealioProduc
   // console.log(res)
   return res.data.product;
 }
+
 
 export async function getCatalogCategories(): Promise<DealioCategory[]> {
   const token = await getDealioToken();
