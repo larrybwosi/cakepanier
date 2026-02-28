@@ -41,8 +41,7 @@ export interface DealioProduct {
   sku: string;
   categoryId: string;
   category: DealioCategory | null;
-  images: Array<{ url: string; alt: string | null; isPrimary: boolean }>; // usually undefined
-  imageUrls: string[]; // Added for easier access to image URLs
+  images: string[];
   variants: DealioVariant[];
   isActive: boolean;
   isFeatured: boolean;

@@ -355,9 +355,7 @@ export function ProductDetailClient({ product }: Props) {
 
   // Format images securely
   const images = product.images?.length
-    ? product.images
-    : product.imageUrls?.length
-      ? product.imageUrls.map((url, i) => ({
+      ? product.images.map((url, i) => ({
           url,
           alt: `${product.name} - Image ${i + 1}`,
           isPrimary: i === 0,
@@ -414,6 +412,7 @@ export function ProductDetailClient({ product }: Props) {
       variantPrice: selectedVariant.price,
       addOns: [],
       productImage: images.find((i) => i.isPrimary)?.url ?? images[0]?.url,
+      quantity:1
     });
 
     if (success) {

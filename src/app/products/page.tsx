@@ -48,6 +48,8 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) =
   // console.log('Fetched products:', JSON.stringify(productsRes, null, 2));
   // console.log('Fetched categories:', categories);
 
+  // console.log(productsRes)
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -66,9 +68,9 @@ const Page = async ({ searchParams }: { searchParams: Promise<SearchParams> }) =
           </div>
 
           <ProductsClient
-            products={productsRes.data?.products}
-            categories={categories?.categories}
-            pagination={productsRes.data?.pagination}
+            products={productsRes.products}
+            categories={categories}
+            pagination={productsRes.pagination}
           />
         </div>
       </main>

@@ -33,48 +33,50 @@ export async function getCatalogProducts(
   if (params.search) qs.set('search', params.search);
   if (params.isFeatured !== undefined) qs.set('isFeatured', String(params.isFeatured));
 
-  return dealioFetch<DealioProductsResponse>(
+  const res = await dealioFetch<{ data: DealioProductsResponse }>(
     `${base}/catalog/products?${qs.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      cache: 'no-store',
+      cache: "no-store",
     },
   );
+  return res.data
 }
 
 export async function getCatalogProduct(productId: string): Promise<DealioProduct> {
   const token = await getDealioToken();
   const base = getBaseUrl();
 
-  const res = await dealioFetch<{ data: DealioProduct }>(
+  const res = await dealioFetch<{ data: { product: DealioProduct } }>(
     `${base}/catalog/products/${productId}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      cache: 'no-store',
+      cache: "no-store",
     },
   );
-  return res.data;
+  // console.log(res)
+  return res.data.product;
 }
 
 export async function getCatalogCategories(): Promise<DealioCategory[]> {
   const token = await getDealioToken();
   const base = getBaseUrl();
 
-  const res = await dealioFetch<{ data: DealioCategory[] }>(
+  const res = await dealioFetch<{ data: { categories: DealioCategory[] } }>(
     `${base}/catalog/categories`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      cache: 'no-store',
+      cache: "no-store",
     },
   );
-  return res.data;
+  return res.data.categories;
 }
