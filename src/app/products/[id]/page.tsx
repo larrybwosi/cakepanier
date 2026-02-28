@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   try {
     const product = await getCatalogProduct(id);
     return {
-      title: `${product.name} | Cakepanier`,
+      title: `${product?.product?.name}`,
       description: product.description,
     };
   } catch {
@@ -32,6 +32,7 @@ const Page = async ({ params }: PageProps) => {
   let product;
   try {
     product = await getCatalogProduct(id);
+    // console.log('Fetched product:', product);
   } catch (err) {
     if (err instanceof DealioNotFoundError) {
       notFound();
@@ -55,12 +56,11 @@ const Page = async ({ params }: PageProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <ProductDetailClient product={product} />
+      <ProductDetailClient product={product?.product} />
       {/* Reviews are still Supabase-backed — product_id stores the Dealio product ID */}
       <div className="container mx-auto px-4 pb-12">
-        <ProductReviews productId={product.id} />
+        <ProductReviews productId={product.product?.id} productName={product?.product?.name}/>
       </div>
-      <Footer />
     </div>
   );
 };

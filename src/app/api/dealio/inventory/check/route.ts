@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await checkInventory(body.variantId, locationId);
+    console.log(result)
     return NextResponse.json({ data: result });
   } catch (err) {
     if (err instanceof DealioApiError) {

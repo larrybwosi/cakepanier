@@ -50,7 +50,7 @@ export async function getDealioToken(): Promise<string> {
     ].join(' '),
   });
 
-  const res = await fetch(`${getBaseUrl()}/auth/token`, {
+  const res = await fetch(`${getBaseUrl()}/oauth/token`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: body.toString(),

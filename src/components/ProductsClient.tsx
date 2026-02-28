@@ -54,14 +54,14 @@ export function ProductsClient({ products, categories, pagination }: Props) {
 
   const getPrimaryImage = (product: DealioProduct): string => {
     const primary = product.images?.find(img => img.isPrimary);
-    return primary?.url ?? product.images?.[0]?.url ?? '/placeholder.svg?height=300&width=400';
+    return primary?.url ?? product.imageUrls?.[0] ?? '/placeholder.svg?height=300&width=400';
   };
 
   const isInStock = (product: DealioProduct): boolean =>
     product.variants?.some(v => v.isAvailable) ?? false;
 
   const filteredAndSorted = useMemo(() => {
-    let filtered = products.filter(p => {
+    let filtered = products?.filter(p => {
       const matchesSearch =
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.description.toLowerCase().includes(searchTerm.toLowerCase());

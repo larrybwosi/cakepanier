@@ -37,10 +37,12 @@ export interface DealioProduct {
   id: string;
   name: string;
   description: string;
+  detailedDescription: string | null; // Markdown content
   sku: string;
   categoryId: string;
   category: DealioCategory | null;
-  images: Array<{ url: string; alt: string | null; isPrimary: boolean }>;
+  images: Array<{ url: string; alt: string | null; isPrimary: boolean }>; // usually undefined
+  imageUrls: string[]; // Added for easier access to image URLs
   variants: DealioVariant[];
   isActive: boolean;
   isFeatured: boolean;
@@ -50,7 +52,7 @@ export interface DealioProduct {
 }
 
 export interface DealioProductsResponse {
-  data: DealioProduct[];
+  products: DealioProduct[];
   pagination: {
     page: number;
     limit: number;
