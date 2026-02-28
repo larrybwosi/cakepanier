@@ -8,7 +8,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 
 const Page = () => {
   const { toast } = useToast();
@@ -415,8 +414,6 @@ const Page = () => {
           </div>
         </section>
       </main>
-
-      <Footer />
     </div>
   );
 };
