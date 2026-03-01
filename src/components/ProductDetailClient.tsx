@@ -851,7 +851,16 @@ export function ProductDetailClient({ product }: Props) {
                   prose-img:rounded-md prose-img:border prose-img:border-border/30 prose-img:shadow-sm
                   prose-hr:border-border/30"
                 >
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      table: ({ children }) => (
+                        <div className="overflow-x-auto my-4 rounded-md border border-border/40">
+                          <table className="min-w-full">{children}</table>
+                        </div>
+                      ),
+                    }}
+                  >
                     {product.detailedDescription}
                   </ReactMarkdown>
                 </div>
