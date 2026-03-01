@@ -16,7 +16,7 @@ const Products = async () => {
       limit: 4, // Limiting to 4 to match your 4-column grid layout
     });
 
-    console.log("Featured products response:", JSON.stringify(response, null, 2));
+    // console.log("Featured products response:", JSON.stringify(response.products, null, 2));
     products = response.products || [];
   } catch (error) {
     console.error("Failed to fetch featured products:", error);
