@@ -12,6 +12,7 @@ export async function POST(req: NextRequest) {
     const locationId = LOCATION_ID;
 
     if (!locationId) {
+      console.error("[dealio/inventory/check] Location ID not configured");
       return NextResponse.json({ error: 'CONFIG', message: 'Location ID not configured' }, { status: 500 });
     }
 
@@ -28,10 +29,10 @@ export async function POST(req: NextRequest) {
     console.log(result)
     return NextResponse.json({ data: result });
   } catch (err) {
+    console.error("[dealio/inventory/check]", err);
     if (err instanceof DealioApiError) {
       return NextResponse.json({ error: err.code, message: err.message }, { status: 502 });
     }
-    console.error('[dealio/inventory/check]', err);
     return NextResponse.json({ error: 'INTERNAL', message: 'Inventory check failed' }, { status: 500 });
   }
 }
