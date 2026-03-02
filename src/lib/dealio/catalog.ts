@@ -40,7 +40,7 @@ export async function getCatalogProducts(
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { revalidate: 3600 },
     },
   );
   return res.data
@@ -65,7 +65,7 @@ export async function getFeaturedCatalogProducts(
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { revalidate: 3600 },
     },
   );
   return res.data
@@ -82,7 +82,7 @@ export async function getCatalogProduct(productId: string): Promise<DealioProduc
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { revalidate: 600 },
     },
   );
   // console.log(res)
@@ -101,7 +101,7 @@ export async function getCatalogCategories(): Promise<DealioCategory[]> {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      cache: "no-store",
+      next: { revalidate: 3600 },
     },
   );
   return res.data.categories;

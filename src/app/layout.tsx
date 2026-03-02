@@ -1,9 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/Footer";
 import { DealioCustomerSync } from "@/components/DealioCustomerSync";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-body",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
+});
 
 // Enterprise SEO: Base URL is required for absolute URL resolution in OG images/canonicals
 const SITE_URL =
@@ -12,11 +25,11 @@ const SITE_URL =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Cake Panier | Premium Bakery & Cafe",
+    default: "Cake Panier | Premium Bakery & Cafe Cheptulu",
     template: "%s | Cake Panier Bakery",
   },
   description:
-    "Premium bakery and cafe in Cheptulu, offering fresh cakes, pastries, beverages & snacks with delivery service. Specializing in event cakes, savory pies, and artisanal baked goods.",
+    "Premium bakery and cafe in Cheptulu. Fresh cakes, pastries, savory pies, and artisanal breads delivered to your door. Best cafe in Kaimosi area.",
   keywords: [
     "bakery Cheptulu",
     "cafe Kaimosi",
@@ -49,19 +62,13 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: "Cake Panier Bakery",
     type: "website",
-    locale: "en_KE", // Upgraded to Kenyan locale
+    locale: "en_KE",
     images: [
       {
-        url: "https://cdn.sanity.io/images/7rkl59hi/production/a5c0fa6115fafb5d79fb5f1b1bbe623d57d33d05-1905x991.png?auto=format&fmt=webp",
+        url: "/hero-bakery.jpg", // Use a local high-quality image as default OG
         width: 1200,
         height: 630,
         alt: "Cake Panier Bakery - Fresh Cakes and Pastries",
-      },
-      {
-        url: "https://cdn.sanity.io/images/7rkl59hi/production/4c3e8f308baec02e30cab2a5a2ffd98235db4129-3024x4032.jpg?auto=format&fmt=webp",
-        width: 1200,
-        height: 630,
-        alt: "Premium Cakes, Pastries and Baked Goods",
       },
     ],
   },
@@ -71,9 +78,7 @@ export const metadata: Metadata = {
     description:
       "Fresh cakes, pastries & snacks with delivery. Event cakes, beef pies, pizza & more!",
     creator: "@cakepanier",
-    images: [
-      "https://cdn.sanity.io/images/7rkl59hi/production/a5c0fa6115fafb5d79fb5f1b1bbe623d57d33d05-1905x991.png?auto=format&fmt=webp",
-    ],
+    images: ["/hero-bakery.jpg"],
   },
   robots: {
     index: true,
@@ -151,7 +156,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleAnalytics gaId="G-L0MS04RB1W" />
-      <body className="antialiased font-sans bg-gray-50">
+      <body className={`${inter.variable} ${playfair.variable} antialiased font-body bg-gray-50`}>
         {/* Injecting JSON-LD Schema for Google */}
         <script
           type="application/ld+json"

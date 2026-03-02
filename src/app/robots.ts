@@ -7,9 +7,8 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
-      // Prevent bots from crawling API routes, admin panels, or Sanity studio
-      disallow: ["/api/", "/admin/", "/studio/"],
+      allow: ["/", "/api/dealio/catalog/"], // Allow crawling public catalog APIs for rich data if bots use them
+      disallow: ["/api/dealio/orders/", "/api/dealio/customers/", "/admin/"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

@@ -82,13 +82,16 @@ export function ProductCard({
         <CardContent className="p-0 flex w-full h-44">
           {/* Image */}
           <div className="relative w-44 shrink-0 overflow-hidden">
-            <img
+            <Image
               src={image}
               alt={product.name}
+              fill
               className={cn(
-                "w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out",
+                "object-cover group-hover:scale-105 transition-transform duration-700 ease-out",
                 isOutOfStock && "grayscale",
               )}
+              sizes="176px"
+              loader={sanityLoader}
             />
             {/* Overlays */}
             {isOutOfStock && (
@@ -215,6 +218,7 @@ export function ProductCard({
             width={400}
             height={300}
             loader={sanityLoader}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
 
           {/* Top badges */}

@@ -1,16 +1,20 @@
 'use client'
 import { ChefHat, Clock, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const Hero = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <img
-          src={'/hero.jpg'}
+        <Image
+          src="/hero.jpg"
           alt="Artisanal bakery with fresh pastries and warm lighting"
-          className="w-full h-full object-cover"
+          className="object-cover"
+          fill
+          priority
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-linear-to-r from-background/95 via-background/80 to-background/30"></div>
       </div>

@@ -34,11 +34,13 @@ export async function generateMetadata({
       title,
       description,
       type: "website",
+      images: ["/pastries-display.jpg"],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
+      images: ["/pastries-display.jpg"],
     },
     alternates: {
       canonical: "/products",

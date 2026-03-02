@@ -17,9 +17,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { id } = await params;
   try {
     const product = await getCatalogProduct(id);
+    const primaryImage = product.images?.[0] || '/placeholder.svg';
+    
     return {
       title: `${product?.name}`,
       description: product.description,
+      openGraph: {
+        title: product.name,
+        description: product.description,
+        type: 'website', // better for specific product pages or 'article'
+        images: [{ url: primaryImage }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: product.name,
+        description: product.description,
+        images: [primaryImage],
+      },
+      alternates: {
+        canonical: `/products/${id}`,
+      },
     };
   } catch {
     return { title: 'Product | Cakepanier' };

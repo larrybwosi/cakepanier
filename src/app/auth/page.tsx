@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
-import { Button } from "@/components/ui/button.tsx";
-import { Input } from "@/components/ui/input.tsx";
-import { Label } from "@/components/ui/label.tsx";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx";
-import { Separator } from "@/components/ui/separator.tsx";
-import { supabase } from "@/integrations/supabase/client.ts";
-import { useToast } from "@/hooks/use-toast.ts";
-import Header from "@/components/Header.tsx";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
 import { useRouter } from 'next/navigation';
 
 const Page = () => {
