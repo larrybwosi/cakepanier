@@ -5,7 +5,6 @@ import {
   Menu,
   X,
   Phone,
-  MapPin,
   ShoppingCart,
   User,
   LogOut,
@@ -17,6 +16,8 @@ import { useCart } from "@/hooks/useCart";
 import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import SignIn from "@/app/sign-in";
+import { signInLogto } from "@/actions/sign";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,21 +27,6 @@ const Header = () => {
   const { getItemCount } = useCart();
   const itemCount = getItemCount();
   const router = useRouter();
-
-  // Check auth status
-  useEffect(() => {
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   // Handle scroll behavior
   useEffect(() => {
@@ -156,9 +142,14 @@ const Header = () => {
                 </Button>
               </>
             ) : (
-              <Button variant="outline" size="sm" asChild>
-                <Link href="/auth">Sign In</Link>
-              </Button>
+              // <Button variant="outline" size="sm" asChild>
+              //   <Link href="/api/logto/sign-in">Sign In</Link>
+              // </Button>
+              <SignIn
+                onSignIn={async () => {
+                  await signInLogto();
+                }}
+              />
             )}
 
             <Button variant="ghost" size="sm" asChild className="relative">
