@@ -18,22 +18,17 @@ export const logtoClient = new LogtoClient({
 
 export const logtoConfig = {
   endpoint: "http://localhost:3001/",
-  appId: "61v62s7yjlk6tri8g037o",
-  appSecret: "CNMtNB0NMRbXmrliEKM29VOhXzacyBla",
+  appId: "0ek5epk7w143ukqbp0dgj",
+  appSecret: "zaEHRxR1zAuNdDIv8CAcaFFulJjiXtdp",
   baseUrl: "http://localhost:3003", // Change to your own base URL
-  cookieSecret: "b2yVN1YZlTDNH2P3elenejOUSJtEwuux", // Auto-generated 32 digit secret
+  cookieSecret: "oWzFs5QYOLoYVTEUBw0HVEohybYIDFsM", // Auto-generated 32 digit secret
   cookieSecure: process.env.NODE_ENV === "production",
+  scopes: [
+    "urn:logto:scope:organizations", // Required to get the organization_id claim
+    "email",
+    "profile",
+  ],
 };
-
-
-// export const logtoConfig = {
-//   endpoint: "https://default.logto.app/",
-//   appId: "n159rn69h9412qwf35fvx",
-//   appSecret: "isw2idx5YfvYPlXheQUsBvnHLj6EX8Ip",
-//   baseUrl: "http://localhost:3000", // Change to your own base URL
-//   cookieSecret: "6hb4t9naBEj5EYYcn72LZVVS2z9NsWWJ", // Auto-generated 32 digit secret
-//   cookieSecure: process.env.NODE_ENV === "production",
-// };
 
 // app/logto.js
 // export const logtoConfig = {

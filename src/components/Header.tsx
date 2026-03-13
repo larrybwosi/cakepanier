@@ -13,15 +13,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/hooks/useCart";
-import { supabase } from "@/integrations/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import SignIn from "@/app/sign-in";
-import { signInLogto } from "@/actions/sign";
+import { signInLogto, signOutLogto } from "@/actions/auth";
 
-const Header = () => {
+// Pass the `user` object as a prop from your server-side Layout or Page
+const Header = ({ user }: { user: any }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const { getItemCount } = useCart();
@@ -122,34 +120,33 @@ const Header = () => {
           <div className="hidden lg:flex items-center space-x-4">
             {user ? (
               <>
+                <span className="text-sm font-medium text-muted-foreground mr-2">
+                  Hi, {user.name || user.username || "Guest"}
+                </span>
                 <Button variant="ghost" size="sm" asChild>
                   <Link href="/profile" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
                     Profile
                   </Link>
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                    router.push("/");
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+                <form action={signOutLogto}>
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </form>
               </>
             ) : (
-              // <Button variant="outline" size="sm" asChild>
-              //   <Link href="/api/logto/sign-in">Sign In</Link>
-              // </Button>
-              <SignIn
-                onSignIn={async () => {
-                  await signInLogto();
-                }}
-              />
+              <form action={signInLogto}>
+                <Button type="submit" variant="outline" size="sm">
+                  Sign In
+                </Button>
+              </form>
             )}
 
             <Button variant="ghost" size="sm" asChild className="relative">
@@ -182,9 +179,16 @@ const Header = () => {
                 </Link>
               </Button>
             ) : (
-              <Button variant="ghost" size="sm" asChild className="text-sm">
-                <Link href="/auth">Sign In</Link>
-              </Button>
+              <form action={signInLogto}>
+                <Button
+                  type="submit"
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm"
+                >
+                  Sign In
+                </Button>
+              </form>
             )}
 
             <Button variant="ghost" size="sm" asChild className="relative p-2">
@@ -262,11 +266,14 @@ const Header = () => {
               </a>
               <div className="flex items-center space-x-2 text-muted-foreground pt-2">
                 <Phone className="h-4 w-4" />
-                <span className="text-sm">(+254 11402097</span>
+                <span className="text-sm">+254 114020977</span>
               </div>
 
               {user ? (
                 <div className="flex flex-col space-y-2 pt-2">
+                  <span className="px-2 text-sm text-muted-foreground">
+                    Logged in as {user.name || user.username || "Guest"}
+                  </span>
                   <Button variant="ghost" asChild className="justify-start p-2">
                     <Link
                       href="/profile"
@@ -277,25 +284,29 @@ const Header = () => {
                       Profile
                     </Link>
                   </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={async () => {
-                      await supabase.auth.signOut();
-                      router.push("/");
-                      toggleMenu();
-                    }}
-                    className="justify-start p-2 flex items-center gap-2"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Sign Out
-                  </Button>
+                  <form action={signOutLogto}>
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      onClick={toggleMenu}
+                      className="w-full justify-start p-2 flex items-center gap-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </form>
                 </div>
               ) : (
-                <Button variant="outline" size="sm" asChild className="w-fit">
-                  <Link href="/auth" onClick={toggleMenu}>
+                <form action={signInLogto} className="w-fit mt-2">
+                  <Button
+                    type="submit"
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleMenu}
+                  >
                     Sign In
-                  </Link>
-                </Button>
+                  </Button>
+                </form>
               )}
             </nav>
           </div>

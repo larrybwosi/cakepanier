@@ -14,8 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
-import pastriesImage from "@/assets/pastries-display.jpg";
-import breadImage from "@/assets/bread-shelves.jpg";
 import { useRouter } from 'next/navigation';
 
 interface CustomerProfile {
