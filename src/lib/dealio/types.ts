@@ -135,6 +135,37 @@ export interface DealioCustomerCreatePayload {
   customerType: 'retail' | 'wholesale';
 }
 
+export interface DealioCartItem {
+  id: string;
+  productId: string; // variant_cuid
+  quantity: number;
+  createdAt: string;
+}
+
+export interface DealioCart {
+  id: string;
+  status: 'ACTIVE' | 'CHECKED_OUT' | 'ABANDONED';
+  items: DealioCartItem[];
+}
+
+export interface DealioCartResponse {
+  success: boolean;
+  data: DealioCart;
+}
+
+export interface DealioCheckoutPayment {
+  method: 'CASH' | 'MPESA' | 'CARD';
+  amount: number;
+}
+
+export interface DealioCheckoutPayload {
+  locationId: string;
+  enableStockTracking: boolean;
+  payments: DealioCheckoutPayment[];
+  notes?: string;
+  pointsToRedeem?: number;
+}
+
 export interface DealioHealthResponse {
   status: 'healthy' | 'degraded' | 'unhealthy';
   version: string;

@@ -13,19 +13,56 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
+// ─── Helper: Fetch Inventory for all variants ────────────────────────────────
+
+async function getProductInventory(variants: any[]) {
+  if (!variants || variants.length === 0) return {};
+
+  const inventoryMap: Record<string, { isAvailable: boolean; isLowStock: boolean; totalStock?: number }> = {};
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'; // Adjust if needed
+
+  await Promise.all(
+    variants.map(async variant => {
+      try {
+        const res = await fetch(`${baseUrl}/api/dealio/inventory/check`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ variantId: variant.id }),
+          // Cache the result for 5 minutes (300 seconds)
+          next: { revalidate: 300 },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          inventoryMap[variant.id] = data.data;
+        } else {
+          inventoryMap[variant.id] = { isAvailable: false, isLowStock: false };
+        }
+      } catch (error) {
+        console.error(`Failed to fetch inventory for variant ${variant.id}`, error);
+        inventoryMap[variant.id] = { isAvailable: false, isLowStock: false };
+      }
+    })
+  );
+
+  return inventoryMap;
+}
+
+// ─── Metadata ────────────────────────────────────────────────────────────────
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { id } = await params;
   try {
     const product = await getCatalogProduct(id);
     const primaryImage = product.images?.[0] || '/placeholder.svg';
-    
+
     return {
       title: `${product?.name}`,
       description: product.description,
       openGraph: {
         title: product.name,
         description: product.description,
-        type: 'website', // better for specific product pages or 'article'
+        type: 'website',
         images: [{ url: primaryImage }],
       },
       twitter: {
@@ -43,26 +80,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+// ─── Page Component ──────────────────────────────────────────────────────────
+
 const Page = async ({ params }: PageProps) => {
   const { id } = await params;
 
   let product;
+  let inventoryMap = {};
+
   try {
     product = await getCatalogProduct(id);
-    // console.log('Fetched product:', product);
+    // Pre-fetch inventory for all variants on the server
+    inventoryMap = await getProductInventory(product.variants || []);
   } catch (err) {
     if (err instanceof DealioNotFoundError) {
       notFound();
     }
-    // On other errors show a graceful message
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <main className="pt-20 pb-12">
           <div className="container mx-auto px-4 text-center py-24">
-            <h1 className="text-3xl font-display font-bold text-foreground mb-4">
-              Unable to load product
-            </h1>
+            <h1 className="text-3xl font-display font-bold text-foreground mb-4">Unable to load product</h1>
             <p className="text-muted-foreground">Please try again in a moment.</p>
           </div>
         </main>
@@ -73,10 +112,9 @@ const Page = async ({ params }: PageProps) => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <ProductDetailClient product={product} />
-      {/* Reviews are still Supabase-backed — product_id stores the Dealio product ID */}
+      <ProductDetailClient product={product} inventoryMap={inventoryMap} />
       <div className="container mx-auto px-4 pb-12">
-        <ProductReviews productId={product.id} productName={product?.name}/>
+        <ProductReviews productId={product.id} productName={product?.name} />
       </div>
     </div>
   );
