@@ -1,19 +1,47 @@
-import { useState, useEffect } from "react";
-import { User, MapPin, Phone, Calendar, Save, Plus, Trash2, LogOut, Heart, Settings, Bell, Eye, EyeOff, Star, ShoppingBag, Gift, Share2, Copy, MessageCircle, Facebook, Instagram, Twitter, Mail, Truck, RotateCcw, CheckCircle, Clock, Package } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
+import { useState, useEffect } from 'react';
+import {
+  User,
+  MapPin,
+  Phone,
+  Calendar,
+  Save,
+  Plus,
+  Trash2,
+  LogOut,
+  Heart,
+  Settings,
+  Bell,
+  Eye,
+  EyeOff,
+  Star,
+  ShoppingBag,
+  Gift,
+  Share2,
+  Copy,
+  MessageCircle,
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Truck,
+  RotateCcw,
+  CheckCircle,
+  Clock,
+  Package,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useToast } from '@/hooks/use-toast';
+import Header from '@/components/Header';
 import { useRouter } from 'next/navigation';
 
 interface CustomerProfile {
@@ -73,8 +101,16 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [profile, setProfile] = useState<CustomerProfile | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loyaltyPoints, setLoyaltyPoints] = useState<LoyaltyPoints>({ total_points: 0, points_earned: 0, points_redeemed: 0 });
-  const [referralData, setReferralData] = useState<ReferralData>({ referral_code: '', referred_users: 0, total_rewards: 0 });
+  const [loyaltyPoints, setLoyaltyPoints] = useState<LoyaltyPoints>({
+    total_points: 0,
+    points_earned: 0,
+    points_redeemed: 0,
+  });
+  const [referralData, setReferralData] = useState<ReferralData>({
+    referral_code: '',
+    referred_users: 0,
+    total_rewards: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showAddressDialog, setShowAddressDialog] = useState(false);
@@ -84,59 +120,44 @@ const Profile = () => {
   const { toast } = useToast();
 
   const [profileForm, setProfileForm] = useState({
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-    dateOfBirth: ""
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    dateOfBirth: '',
   });
 
   const [addressForm, setAddressForm] = useState({
-    label: "",
-    fullName: "",
-    streetAddress: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    country: "United States",
-    phone: "",
+    label: '',
+    fullName: '',
+    streetAddress: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'United States',
+    phone: '',
     isDefault: false,
-    deliveryNotes: ""
+    deliveryNotes: '',
   });
-
-
-  // Fetch profile data
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-      fetchOrders();
-      fetchLoyaltyPoints();
-      fetchReferralData();
-    }
-  }, [user]);
 
   const fetchProfile = async () => {
     try {
-      const { data, error } = await supabase
-        .from('customer_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      const { data, error } = await supabase.from('customer_profiles').select('*').eq('user_id', user.id).single();
 
       if (error && error.code !== 'PGRST116') throw error;
 
       if (data) {
         const profileData: CustomerProfile = {
           ...data,
-          shipping_addresses: Array.isArray(data.shipping_addresses) 
-            ? data.shipping_addresses as unknown as ShippingAddress[]
-            : []
+          shipping_addresses: Array.isArray(data.shipping_addresses)
+            ? (data.shipping_addresses as unknown as ShippingAddress[])
+            : [],
         };
         setProfile(profileData);
         setProfileForm({
-          firstName: data.first_name || "",
-          lastName: data.last_name || "",
-          phoneNumber: data.phone_number || "",
-          dateOfBirth: data.date_of_birth || ""
+          firstName: data.first_name || '',
+          lastName: data.last_name || '',
+          phoneNumber: data.phone_number || '',
+          dateOfBirth: data.date_of_birth || '',
         });
       }
     } catch (error) {
@@ -161,83 +182,21 @@ const Profile = () => {
     }
   };
 
-  const fetchLoyaltyPoints = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_loyalty_points')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      if (data) {
-        setLoyaltyPoints(data);
-      }
-    } catch (error) {
-      console.error('Error fetching loyalty points:', error);
-    }
-  };
-
-  const fetchReferralData = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_referrals')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        // Create referral record if it doesn't exist
-        const referralCode = `REF-${user.id.substring(0, 8).toUpperCase()}`;
-        const { error: createError } = await supabase
-          .from('user_referrals')
-          .insert({
-            user_id: user.id,
-            referral_code: referralCode,
-            referred_users: 0,
-            total_rewards: 0
-          });
-
-        if (!createError) {
-          setReferralData({ referral_code: referralCode, referred_users: 0, total_rewards: 0 });
-        }
-      } else if (data) {
-        setReferralData(data);
-      }
-    } catch (error) {
-      console.error('Error fetching referral data:', error);
-    }
-  };
-
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      const profileData = {
-        user_id: user.id,
-        first_name: profileForm.firstName,
-        last_name: profileForm.lastName,
-        phone_number: profileForm.phoneNumber,
-        date_of_birth: profileForm.dateOfBirth || null
-      };
-
-      const { error } = await supabase
-        .from('customer_profiles')
-        .upsert(profileData);
-
-      if (error) throw error;
-
       toast({
-        title: "Profile updated!",
-        description: "Your profile information has been saved."
+        title: 'Profile updated!',
+        description: 'Your profile information has been saved.',
       });
 
       fetchProfile();
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({
-        title: "Error",
-        description: "Failed to save profile. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to save profile. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setSaving(false);
@@ -252,7 +211,7 @@ const Profile = () => {
       // Simulate geocoding for demo purposes
       const simulatedCoordinates = {
         lat: 40.7128 + (Math.random() - 0.5) * 0.1,
-        lng: -74.0060 + (Math.random() - 0.5) * 0.1
+        lng: -74.006 + (Math.random() - 0.5) * 0.1,
       };
 
       const newAddress: ShippingAddress = {
@@ -267,47 +226,37 @@ const Profile = () => {
         phone: addressForm.phone,
         is_default: addressForm.isDefault,
         delivery_notes: addressForm.deliveryNotes,
-        coordinates: simulatedCoordinates
+        coordinates: simulatedCoordinates,
       };
 
       const updatedAddresses = [...(profile.shipping_addresses || []), newAddress];
 
-      const { error } = await supabase
-        .from('customer_profiles')
-        .update({
-          shipping_addresses: updatedAddresses as any,
-          default_shipping_address_id: addressForm.isDefault ? newAddress.id : profile.default_shipping_address_id
-        })
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-
       toast({
-        title: "Address added!",
-        description: `Shipping address "${addressForm.label}" has been added.`
+        title: 'Address added!',
+        description: `Shipping address "${addressForm.label}" has been added.`,
       });
 
       setShowAddressDialog(false);
       setAddressForm({
-        label: "",
-        fullName: "",
-        streetAddress: "",
-        city: "",
-        state: "",
-        postalCode: "",
-        country: "United States",
-        phone: "",
+        label: '',
+        fullName: '',
+        streetAddress: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'United States',
+        phone: '',
         isDefault: false,
-        deliveryNotes: ""
+        deliveryNotes: '',
       });
 
       fetchProfile();
     } catch (error) {
       console.error('Error adding address:', error);
       toast({
-        title: "Error",
-        description: "Failed to add address. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to add address. Please try again.',
+        variant: 'destructive',
       });
     } finally {
       setSaving(false);
@@ -333,9 +282,7 @@ const Profile = () => {
 
     try {
       const updatedAddresses = profile.shipping_addresses.map(addr =>
-        addr.id === selectedAddress.id
-          ? { ...addr, coordinates: { lat, lng } }
-          : addr
+        addr.id === selectedAddress.id ? { ...addr, coordinates: { lat, lng } } : addr
       );
 
       const { error } = await supabase
@@ -346,8 +293,8 @@ const Profile = () => {
       if (error) throw error;
 
       toast({
-        title: "Location updated!",
-        description: "Your delivery location has been pinned successfully."
+        title: 'Location updated!',
+        description: 'Your delivery location has been pinned successfully.',
       });
 
       setShowLocationPicker(false);
@@ -355,9 +302,9 @@ const Profile = () => {
     } catch (error) {
       console.error('Error updating location:', error);
       toast({
-        title: "Error",
-        description: "Failed to update location. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to update location. Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -366,28 +313,28 @@ const Profile = () => {
     const referralLink = `${window.location.origin}?ref=${referralData.referral_code}`;
     navigator.clipboard.writeText(referralLink);
     toast({
-      title: "Link copied!",
-      description: "Referral link has been copied to your clipboard."
+      title: 'Link copied!',
+      description: 'Referral link has been copied to your clipboard.',
     });
   };
 
   const shareToSocial = (platform: string) => {
     const referralLink = `${window.location.origin}?ref=${referralData.referral_code}`;
-    const message = "Join me at Sweet Dreams Bakery and get amazing freshly baked goods! Use my referral link:";
-    
+    const message = 'Join me at Sweet Dreams Bakery and get amazing freshly baked goods! Use my referral link:';
+
     const urls = {
       whatsapp: `https://wa.me/?text=${encodeURIComponent(`${message} ${referralLink}`)}`,
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`,
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(message)}&url=${encodeURIComponent(referralLink)}`,
       instagram: referralLink, // Instagram doesn't support direct sharing URLs
-      email: `mailto:?subject=${encodeURIComponent("Try Sweet Dreams Bakery!")}&body=${encodeURIComponent(`${message} ${referralLink}`)}`
+      email: `mailto:?subject=${encodeURIComponent('Try Sweet Dreams Bakery!')}&body=${encodeURIComponent(`${message} ${referralLink}`)}`,
     };
 
     if (platform === 'instagram') {
       copyReferralLink();
       toast({
-        title: "Link copied for Instagram!",
-        description: "Share the link in your Instagram story or post.",
+        title: 'Link copied for Instagram!',
+        description: 'Share the link in your Instagram story or post.',
       });
     } else {
       window.open(urls[platform], '_blank');
@@ -396,20 +343,29 @@ const Profile = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'delivered': return 'text-green-600 bg-green-50 border-green-200';
-      case 'in-transit': return 'text-blue-600 bg-blue-50 border-blue-200';
-      case 'pending': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'cancelled': return 'text-red-600 bg-red-50 border-red-200';
-      default: return 'text-muted-foreground bg-muted border-border';
+      case 'delivered':
+        return 'text-green-600 bg-green-50 border-green-200';
+      case 'in-transit':
+        return 'text-blue-600 bg-blue-50 border-blue-200';
+      case 'pending':
+        return 'text-yellow-600 bg-yellow-50 border-yellow-200';
+      case 'cancelled':
+        return 'text-red-600 bg-red-50 border-red-200';
+      default:
+        return 'text-muted-foreground bg-muted border-border';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'delivered': return CheckCircle;
-      case 'in-transit': return Truck;
-      case 'pending': return Clock;
-      default: return Package;
+      case 'delivered':
+        return CheckCircle;
+      case 'in-transit':
+        return Truck;
+      case 'pending':
+        return Clock;
+      default:
+        return Package;
     }
   };
 
@@ -432,7 +388,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       <main className="pt-20 pb-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="flex items-center justify-between mb-8">
@@ -447,9 +403,7 @@ const Profile = () => {
                 <h1 className="text-3xl font-display font-bold text-foreground mb-2">
                   Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}!
                 </h1>
-                <p className="text-muted-foreground">
-                  Manage your profile, preferences, and view your order history
-                </p>
+                <p className="text-muted-foreground">Manage your profile, preferences, and view your order history</p>
               </div>
             </div>
             <Button onClick={handleSignOut} variant="outline" className="flex items-center gap-2">
@@ -458,7 +412,7 @@ const Profile = () => {
             </Button>
           </div>
 
-            <Tabs defaultValue="profile" className="space-y-6">
+          <Tabs defaultValue="profile" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
               <TabsTrigger value="profile">Profile</TabsTrigger>
               <TabsTrigger value="addresses">Addresses</TabsTrigger>
@@ -483,7 +437,7 @@ const Profile = () => {
                       <Input
                         id="firstName"
                         value={profileForm.firstName}
-                        onChange={(e) => setProfileForm(prev => ({ ...prev, firstName: e.target.value }))}
+                        onChange={e => setProfileForm(prev => ({ ...prev, firstName: e.target.value }))}
                         placeholder="Enter your first name"
                       />
                     </div>
@@ -492,7 +446,7 @@ const Profile = () => {
                       <Input
                         id="lastName"
                         value={profileForm.lastName}
-                        onChange={(e) => setProfileForm(prev => ({ ...prev, lastName: e.target.value }))}
+                        onChange={e => setProfileForm(prev => ({ ...prev, lastName: e.target.value }))}
                         placeholder="Enter your last name"
                       />
                     </div>
@@ -500,16 +454,8 @@ const Profile = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={user?.email || ""}
-                      disabled
-                      className="bg-muted"
-                    />
-                    <p className="text-sm text-muted-foreground">
-                      Email cannot be changed. Contact support if needed.
-                    </p>
+                    <Input id="email" type="email" value={user?.email || ''} disabled className="bg-muted" />
+                    <p className="text-sm text-muted-foreground">Email cannot be changed. Contact support if needed.</p>
                   </div>
 
                   <div className="space-y-2">
@@ -520,7 +466,7 @@ const Profile = () => {
                         id="phone"
                         type="tel"
                         value={profileForm.phoneNumber}
-                        onChange={(e) => setProfileForm(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                        onChange={e => setProfileForm(prev => ({ ...prev, phoneNumber: e.target.value }))}
                         placeholder="Enter your phone number"
                         className="pl-10"
                       />
@@ -535,7 +481,7 @@ const Profile = () => {
                         id="dob"
                         type="date"
                         value={profileForm.dateOfBirth}
-                        onChange={(e) => setProfileForm(prev => ({ ...prev, dateOfBirth: e.target.value }))}
+                        onChange={e => setProfileForm(prev => ({ ...prev, dateOfBirth: e.target.value }))}
                         className="pl-10"
                       />
                     </div>
@@ -544,7 +490,7 @@ const Profile = () => {
                   <div className="pt-4">
                     <Button onClick={handleSaveProfile} disabled={saving} className="flex items-center gap-2">
                       <Save className="h-4 w-4" />
-                      {saving ? "Saving..." : "Save Changes"}
+                      {saving ? 'Saving...' : 'Save Changes'}
                     </Button>
                   </div>
                 </CardContent>
@@ -562,7 +508,7 @@ const Profile = () => {
                 <CardContent>
                   {orders.length > 0 ? (
                     <div className="space-y-4">
-                      {orders.map((order) => {
+                      {orders.map(order => {
                         const StatusIcon = getStatusIcon(order.status);
                         return (
                           <Card key={order.id} className="p-4">
@@ -570,18 +516,29 @@ const Profile = () => {
                               <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2">
                                   <h4 className="font-semibold text-lg">#{order.order_number}</h4>
-                                  <Badge variant="outline" className={`flex items-center gap-1 ${getStatusColor(order.status)}`}>
+                                  <Badge
+                                    variant="outline"
+                                    className={`flex items-center gap-1 ${getStatusColor(order.status)}`}
+                                  >
                                     <StatusIcon className="h-3 w-3" />
                                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                                   </Badge>
                                 </div>
                                 <div className="text-sm text-muted-foreground space-y-1">
-                                  <p>Ordered on {new Date(order.created_at).toLocaleDateString('en-US', { 
-                                    year: 'numeric', 
-                                    month: 'long', 
-                                    day: 'numeric' 
-                                  })}</p>
-                                  <p>Items: {Array.isArray(order.items) ? order.items.map(item => `${item.quantity}x ${item.name}`).join(', ') : 'N/A'}</p>
+                                  <p>
+                                    Ordered on{' '}
+                                    {new Date(order.created_at).toLocaleDateString('en-US', {
+                                      year: 'numeric',
+                                      month: 'long',
+                                      day: 'numeric',
+                                    })}
+                                  </p>
+                                  <p>
+                                    Items:{' '}
+                                    {Array.isArray(order.items)
+                                      ? order.items.map(item => `${item.quantity}x ${item.name}`).join(', ')
+                                      : 'N/A'}
+                                  </p>
                                   {order.delivery_notes && (
                                     <p className="flex items-center gap-1">
                                       <MapPin className="h-3 w-3" />
@@ -616,15 +573,9 @@ const Profile = () => {
                   ) : (
                     <div className="text-center py-12">
                       <ShoppingBag className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-foreground mb-2">
-                        No Orders Yet
-                      </h3>
-                      <p className="text-muted-foreground mb-6">
-                        Start shopping to see your order history here
-                      </p>
-                      <Button onClick={() => router.push('/products')}>
-                        Browse Products
-                      </Button>
+                      <h3 className="text-xl font-semibold text-foreground mb-2">No Orders Yet</h3>
+                      <p className="text-muted-foreground mb-6">Start shopping to see your order history here</p>
+                      <Button onClick={() => router.push('/products')}>Browse Products</Button>
                     </div>
                   )}
                 </CardContent>
@@ -642,21 +593,15 @@ const Profile = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-6">
-                      <div className="text-4xl font-bold text-primary mb-2">
-                        {loyaltyPoints.total_points}
-                      </div>
+                      <div className="text-4xl font-bold text-primary mb-2">{loyaltyPoints.total_points}</div>
                       <p className="text-muted-foreground mb-4">Available Points</p>
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div className="text-center">
-                          <div className="text-lg font-semibold text-green-600">
-                            +{loyaltyPoints.points_earned}
-                          </div>
+                          <div className="text-lg font-semibold text-green-600">+{loyaltyPoints.points_earned}</div>
                           <p className="text-muted-foreground">Earned</p>
                         </div>
                         <div className="text-center">
-                          <div className="text-lg font-semibold text-red-600">
-                            -{loyaltyPoints.points_redeemed}
-                          </div>
+                          <div className="text-lg font-semibold text-red-600">-{loyaltyPoints.points_redeemed}</div>
                           <p className="text-muted-foreground">Redeemed</p>
                         </div>
                       </div>
@@ -707,15 +652,11 @@ const Profile = () => {
                   <CardContent>
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div>
-                        <div className="text-3xl font-bold text-blue-600 mb-1">
-                          {referralData.referred_users}
-                        </div>
+                        <div className="text-3xl font-bold text-blue-600 mb-1">{referralData.referred_users}</div>
                         <p className="text-sm text-muted-foreground">Friends Referred</p>
                       </div>
                       <div>
-                        <div className="text-3xl font-bold text-green-600 mb-1">
-                          ${referralData.total_rewards}
-                        </div>
+                        <div className="text-3xl font-bold text-green-600 mb-1">${referralData.total_rewards}</div>
                         <p className="text-sm text-muted-foreground">Rewards Earned</p>
                       </div>
                     </div>
@@ -732,13 +673,17 @@ const Profile = () => {
                         {window.location.origin}?ref={referralData.referral_code}
                       </p>
                     </div>
-                    
+
                     <div className="grid grid-cols-2 gap-2">
                       <Button variant="outline" onClick={copyReferralLink} className="flex items-center gap-2">
                         <Copy className="h-4 w-4" />
                         Copy Link
                       </Button>
-                      <Button variant="outline" onClick={() => shareToSocial('email')} className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => shareToSocial('email')}
+                        className="flex items-center gap-2"
+                      >
                         <Mail className="h-4 w-4" />
                         Email
                       </Button>
@@ -812,9 +757,7 @@ const Profile = () => {
                     <div className="text-center p-4 bg-purple-50 rounded-lg">
                       <Gift className="h-8 w-8 text-purple-600 mx-auto mb-2" />
                       <h4 className="font-semibold mb-2">3. Both Get Rewards</h4>
-                      <p className="text-sm text-muted-foreground">
-                        You both receive $5 off your next order!
-                      </p>
+                      <p className="text-sm text-muted-foreground">You both receive $5 off your next order!</p>
                     </div>
                   </div>
                 </CardContent>
@@ -841,23 +784,19 @@ const Profile = () => {
                       </div>
                       <Switch id="email-notifications" defaultChecked />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label htmlFor="sms-notifications">SMS Notifications</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Get text updates for order status and delivery
-                        </p>
+                        <p className="text-sm text-muted-foreground">Get text updates for order status and delivery</p>
                       </div>
                       <Switch id="sms-notifications" />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label htmlFor="marketing-emails">Marketing Emails</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Special offers, discounts, and bakery news
-                        </p>
+                        <p className="text-sm text-muted-foreground">Special offers, discounts, and bakery news</p>
                       </div>
                       <Switch id="marketing-emails" defaultChecked />
                     </div>
@@ -890,7 +829,7 @@ const Profile = () => {
                           </SelectContent>
                         </Select>
                       </div>
-                      
+
                       <div className="space-y-2">
                         <Label htmlFor="favorite-categories">Favorite Categories</Label>
                         <Select>
@@ -906,19 +845,13 @@ const Profile = () => {
                         </Select>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-2">
                       <Label htmlFor="notes">Additional Notes</Label>
-                      <Textarea
-                        id="notes"
-                        placeholder="Any special dietary needs or preferences..."
-                        rows={3}
-                      />
+                      <Textarea id="notes" placeholder="Any special dietary needs or preferences..." rows={3} />
                     </div>
 
-                    <Button className="w-full md:w-auto">
-                      Save Preferences
-                    </Button>
+                    <Button className="w-full md:w-auto">Save Preferences</Button>
                   </CardContent>
                 </Card>
 
@@ -934,13 +867,11 @@ const Profile = () => {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label htmlFor="profile-visibility">Profile Visibility</Label>
-                        <p className="text-sm text-muted-foreground">
-                          Allow others to see your reviews and ratings
-                        </p>
+                        <p className="text-sm text-muted-foreground">Allow others to see your reviews and ratings</p>
                       </div>
                       <Switch id="profile-visibility" defaultChecked />
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label htmlFor="order-history">Order History Visibility</Label>
@@ -968,27 +899,27 @@ const Profile = () => {
                     {/* Sample orders */}
                     {[
                       {
-                        id: "ORD-001",
-                        date: "2024-01-15",
-                        status: "Delivered",
-                        total: "$24.75",
-                        items: ["2x Artisan Croissants", "1x Sourdough Bread", "1x Danish Pastries"],
+                        id: 'ORD-001',
+                        date: '2024-01-15',
+                        status: 'Delivered',
+                        total: '$24.75',
+                        items: ['2x Artisan Croissants', '1x Sourdough Bread', '1x Danish Pastries'],
                       },
                       {
-                        id: "ORD-002",
-                        date: "2024-01-10",
-                        status: "Delivered",
-                        total: "$18.50",
-                        items: ["1x Fruit Tarts", "2x Cinnamon Rolls"],
+                        id: 'ORD-002',
+                        date: '2024-01-10',
+                        status: 'Delivered',
+                        total: '$18.50',
+                        items: ['1x Fruit Tarts', '2x Cinnamon Rolls'],
                       },
                       {
-                        id: "ORD-003",
-                        date: "2024-01-05",
-                        status: "Delivered",
-                        total: "$32.25",
-                        items: ["1x Chocolate Éclairs", "2x Artisan Baguettes", "1x Multigrain Loaf"],
+                        id: 'ORD-003',
+                        date: '2024-01-05',
+                        status: 'Delivered',
+                        total: '$32.25',
+                        items: ['1x Chocolate Éclairs', '2x Artisan Baguettes', '1x Multigrain Loaf'],
                       },
-                    ].map((order) => (
+                    ].map(order => (
                       <Card key={order.id} className="border border-border">
                         <CardContent className="p-4">
                           <div className="flex flex-col md:flex-row md:items-center justify-between mb-3">
@@ -999,8 +930,8 @@ const Profile = () => {
                               </div>
                             </div>
                             <div className="flex items-center gap-3 mt-2 md:mt-0">
-                              <Badge 
-                                variant={order.status === "Delivered" ? "default" : "secondary"}
+                              <Badge
+                                variant={order.status === 'Delivered' ? 'default' : 'secondary'}
                                 className="shrink-0"
                               >
                                 {order.status}
@@ -1008,7 +939,7 @@ const Profile = () => {
                               <span className="font-bold text-primary">{order.total}</span>
                             </div>
                           </div>
-                          
+
                           <div className="space-y-2">
                             <p className="text-sm font-medium text-foreground">Items:</p>
                             <ul className="text-sm text-muted-foreground space-y-1">
@@ -1020,7 +951,7 @@ const Profile = () => {
                               ))}
                             </ul>
                           </div>
-                          
+
                           <div className="flex flex-col sm:flex-row gap-2 mt-4">
                             <Button variant="outline" size="sm" className="flex-1">
                               View Details
@@ -1036,19 +967,15 @@ const Profile = () => {
                       </Card>
                     ))}
                   </div>
-                  
+
                   {/* Empty state */}
                   <div className="text-center py-8 mt-8 border-t border-border">
                     <ShoppingBag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">
-                      No orders yet
-                    </h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">No orders yet</h3>
                     <p className="text-muted-foreground mb-4">
                       Start exploring our delicious products and place your first order
                     </p>
-                    <Button onClick={() => router.push('/products')}>
-                      Start Shopping
-                    </Button>
+                    <Button onClick={() => router.push('/products')}>Start Shopping</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -1080,17 +1007,17 @@ const Profile = () => {
                               id="address-label"
                               placeholder="e.g., Home, Work, Mom's House"
                               value={addressForm.label}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, label: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, label: e.target.value }))}
                             />
                           </div>
-                          
+
                           <div className="space-y-2">
                             <Label htmlFor="full-name">Full Name</Label>
                             <Input
                               id="full-name"
                               placeholder="Recipient's full name"
                               value={addressForm.fullName}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, fullName: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, fullName: e.target.value }))}
                             />
                           </div>
 
@@ -1100,7 +1027,7 @@ const Profile = () => {
                               id="street-address"
                               placeholder="123 Main St, Apt 4B"
                               value={addressForm.streetAddress}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, streetAddress: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, streetAddress: e.target.value }))}
                               rows={2}
                             />
                           </div>
@@ -1112,7 +1039,7 @@ const Profile = () => {
                                 id="city"
                                 placeholder="City"
                                 value={addressForm.city}
-                                onChange={(e) => setAddressForm(prev => ({ ...prev, city: e.target.value }))}
+                                onChange={e => setAddressForm(prev => ({ ...prev, city: e.target.value }))}
                               />
                             </div>
                             <div className="space-y-2">
@@ -1121,7 +1048,7 @@ const Profile = () => {
                                 id="state"
                                 placeholder="State"
                                 value={addressForm.state}
-                                onChange={(e) => setAddressForm(prev => ({ ...prev, state: e.target.value }))}
+                                onChange={e => setAddressForm(prev => ({ ...prev, state: e.target.value }))}
                               />
                             </div>
                           </div>
@@ -1132,7 +1059,7 @@ const Profile = () => {
                               id="postal-code"
                               placeholder="ZIP Code"
                               value={addressForm.postalCode}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, postalCode: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, postalCode: e.target.value }))}
                             />
                           </div>
 
@@ -1143,7 +1070,7 @@ const Profile = () => {
                               type="tel"
                               placeholder="Phone number for delivery"
                               value={addressForm.phone}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, phone: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, phone: e.target.value }))}
                             />
                           </div>
 
@@ -1153,7 +1080,7 @@ const Profile = () => {
                               id="delivery-notes"
                               placeholder="e.g., Leave at door, Ring doorbell, Call when arrived..."
                               value={addressForm.deliveryNotes}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, deliveryNotes: e.target.value }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, deliveryNotes: e.target.value }))}
                               rows={2}
                             />
                           </div>
@@ -1163,7 +1090,7 @@ const Profile = () => {
                               type="checkbox"
                               id="is-default"
                               checked={addressForm.isDefault}
-                              onChange={(e) => setAddressForm(prev => ({ ...prev, isDefault: e.target.checked }))}
+                              onChange={e => setAddressForm(prev => ({ ...prev, isDefault: e.target.checked }))}
                               className="rounded border-gray-300"
                             />
                             <Label htmlFor="is-default" className="text-sm">
@@ -1178,18 +1105,14 @@ const Profile = () => {
                           </div>
 
                           <div className="flex justify-end space-x-2 pt-4">
-                            <Button 
-                              variant="outline" 
-                              onClick={() => setShowAddressDialog(false)}
-                              disabled={saving}
-                            >
+                            <Button variant="outline" onClick={() => setShowAddressDialog(false)} disabled={saving}>
                               Cancel
                             </Button>
-                            <Button 
+                            <Button
                               onClick={handleAddAddress}
                               disabled={saving || !addressForm.label || !addressForm.streetAddress || !addressForm.city}
                             >
-                              {saving ? "Adding..." : "Add Address"}
+                              {saving ? 'Adding...' : 'Add Address'}
                             </Button>
                           </div>
                         </div>
@@ -1200,15 +1123,13 @@ const Profile = () => {
                 <CardContent>
                   {profile?.shipping_addresses && profile.shipping_addresses.length > 0 ? (
                     <div className="space-y-4">
-                      {profile.shipping_addresses.map((address) => (
+                      {profile.shipping_addresses.map(address => (
                         <Card key={address.id} className="relative">
                           <CardContent className="pt-6">
                             <div className="flex items-start justify-between">
                               <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                  <h4 className="font-semibold text-foreground">
-                                    {address.label}
-                                  </h4>
+                                  <h4 className="font-semibold text-foreground">{address.label}</h4>
                                   {address.is_default && (
                                     <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
                                       Default
@@ -1216,35 +1137,26 @@ const Profile = () => {
                                   )}
                                 </div>
                                 {address.full_name && (
-                                  <p className="text-sm font-medium text-foreground">
-                                    {address.full_name}
-                                  </p>
+                                  <p className="text-sm font-medium text-foreground">{address.full_name}</p>
                                 )}
-                                <p className="text-sm text-muted-foreground">
-                                  {address.street_address}
-                                </p>
+                                <p className="text-sm text-muted-foreground">{address.street_address}</p>
                                 <p className="text-sm text-muted-foreground">
                                   {address.city}, {address.state} {address.postal_code}
                                 </p>
-                                {address.phone && (
-                                  <p className="text-sm text-muted-foreground">
-                                    📞 {address.phone}
-                                  </p>
-                                )}
+                                {address.phone && <p className="text-sm text-muted-foreground">📞 {address.phone}</p>}
                                 {address.delivery_notes && (
-                                  <p className="text-sm text-muted-foreground italic">
-                                    📝 "{address.delivery_notes}"
-                                  </p>
+                                  <p className="text-sm text-muted-foreground italic">📝 "{address.delivery_notes}"</p>
                                 )}
                                 {address.coordinates && (
                                   <p className="text-xs text-muted-foreground">
-                                    📍 Location pinned: {address.coordinates.lat.toFixed(4)}, {address.coordinates.lng.toFixed(4)}
+                                    📍 Location pinned: {address.coordinates.lat.toFixed(4)},{' '}
+                                    {address.coordinates.lng.toFixed(4)}
                                   </p>
                                 )}
                               </div>
                               <div className="flex flex-col gap-2">
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => handlePinLocation(address)}
                                   className="flex items-center gap-1"
@@ -1264,16 +1176,9 @@ const Profile = () => {
                   ) : (
                     <div className="text-center py-12">
                       <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-foreground mb-2">
-                        No addresses yet
-                      </h3>
-                      <p className="text-muted-foreground mb-4">
-                        Add your first shipping address to get started
-                      </p>
-                      <Button 
-                        onClick={() => setShowAddressDialog(true)}
-                        variant="outline"
-                      >
+                      <h3 className="text-lg font-semibold text-foreground mb-2">No addresses yet</h3>
+                      <p className="text-muted-foreground mb-4">Add your first shipping address to get started</p>
+                      <Button onClick={() => setShowAddressDialog(true)} variant="outline">
                         Add Your First Address
                       </Button>
                     </div>
@@ -1304,26 +1209,20 @@ const Profile = () => {
                       <li>• See delivery zones and estimated times</li>
                     </ul>
                     <div className="bg-white rounded p-3 border border-dashed border-gray-300 mb-4">
-                      <p className="text-xs text-muted-foreground">
-                        Demo: Simulating location update
-                      </p>
+                      <p className="text-xs text-muted-foreground">Demo: Simulating location update</p>
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowLocationPicker(false)}
-                    className="flex-1"
-                  >
+                  <Button variant="outline" onClick={() => setShowLocationPicker(false)} className="flex-1">
                     Cancel
                   </Button>
                   <Button
                     onClick={() => {
                       // Simulate location update with random coordinates
                       const lat = 40.7128 + (Math.random() - 0.5) * 0.01;
-                      const lng = -74.0060 + (Math.random() - 0.5) * 0.01;
+                      const lng = -74.006 + (Math.random() - 0.5) * 0.01;
                       handleLocationUpdate(lat, lng);
                     }}
                     className="flex-1"

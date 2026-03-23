@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/hooks/useCart';
+import { useFavorites } from '@/hooks/useFavorites';
 import type { DealioProduct, DealioVariant } from '@/lib/dealio/types';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -34,15 +35,23 @@ interface Props {
 export function ProductDetailClient({ product, inventoryMap }: Props) {
   const router = useRouter();
   const { addToCart } = useCart();
+  const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites();
   const thumbnailRef = useRef<HTMLDivElement>(null);
 
   const [selectedVariant, setSelectedVariant] = useState<DealioVariant | null>(product.variants?.[0] ?? null);
   const [isAdding, setIsAdding] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleToggleFavorite = async () => {
+    if (isFavorite(product.id)) {
+      await removeFromFavorites(product.id);
+    } else {
+      await addToFavorites(product.id);
+    }
+  };
 
   // Format images securely
   const images = product.images?.length
@@ -229,15 +238,15 @@ export function ProductDetailClient({ product, inventoryMap }: Props) {
 
                     <div className="flex items-center gap-1.5 shrink-0 mt-1">
                       <button
-                        onClick={() => setIsWishlisted(!isWishlisted)}
+                        onClick={handleToggleFavorite}
                         className={`p-2.5 rounded-md transition-all duration-200 ${
-                          isWishlisted
+                          isFavorite(product.id)
                             ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-500'
                             : 'hover:bg-muted text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         <Heart
-                          className={`h-5 w-5 transition-transform ${isWishlisted ? 'fill-rose-500 scale-110' : 'scale-100'}`}
+                          className={`h-5 w-5 transition-transform ${isFavorite(product.id) ? 'fill-rose-500 scale-110' : 'scale-100'}`}
                         />
                       </button>
                       <button

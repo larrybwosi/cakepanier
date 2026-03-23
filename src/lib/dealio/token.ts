@@ -62,7 +62,9 @@ export async function getDealioToken(): Promise<string> {
     try {
       const json = await res.json();
       errMsg = json.message ?? errMsg;
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
     throw new DealioAuthError('TOKEN_FETCH_FAILED', errMsg, res.status);
   }
 

@@ -1,84 +1,81 @@
-import type { Metadata, Viewport } from "next";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import { Inter, Playfair_Display } from "next/font/google";
-import "./globals.css";
-import Footer from "@/components/Footer";
-import { DealioCustomerSync } from "@/components/DealioCustomerSync";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
+import type { Metadata, Viewport } from 'next';
+import { GoogleAnalytics } from '@next/third-parties/google';
+import { Inter, Playfair_Display } from 'next/font/google';
+import './globals.css';
+import Footer from '@/components/Footer';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-body",
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-body',
 });
 
 const playfair = Playfair_Display({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-display",
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-display',
 });
 
 // Enterprise SEO: Base URL is required for absolute URL resolution in OG images/canonicals
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://cakepanier.vercel.app";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cakepanier.vercel.app';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Cake Panier | Premium Bakery & Cafe Cheptulu",
-    template: "%s | Cake Panier Bakery",
+    default: 'Cake Panier | Premium Bakery & Cafe Cheptulu',
+    template: '%s | Cake Panier Bakery',
   },
   description:
-    "Premium bakery and cafe in Cheptulu. Fresh cakes, pastries, savory pies, and artisanal breads delivered to your door. Best cafe in Kaimosi area.",
+    'Premium bakery and cafe in Cheptulu. Fresh cakes, pastries, savory pies, and artisanal breads delivered to your door. Best cafe in Kaimosi area.',
   keywords: [
-    "bakery Cheptulu",
-    "cafe Kaimosi",
-    "cake delivery Kenya",
-    "Cake Panier",
-    "event cakes",
-    "custom cakes",
-    "fresh pastries",
-    "beef pie",
-    "pizza",
-    "fresh juice",
-    "online bakery",
-    "catering service",
+    'bakery Cheptulu',
+    'cafe Kaimosi',
+    'cake delivery Kenya',
+    'Cake Panier',
+    'event cakes',
+    'custom cakes',
+    'fresh pastries',
+    'beef pie',
+    'pizza',
+    'fresh juice',
+    'online bakery',
+    'catering service',
   ],
-  authors: [{ name: "Cake Panier Bakery", url: SITE_URL }],
-  creator: "Cake Panier",
-  publisher: "Cake Panier Bakery",
+  authors: [{ name: 'Cake Panier Bakery', url: SITE_URL }],
+  creator: 'Cake Panier',
+  publisher: 'Cake Panier Bakery',
   formatDetection: {
     telephone: true,
     address: true,
     email: true,
   },
   alternates: {
-    canonical: "/",
+    canonical: '/',
   },
   openGraph: {
-    title: "Cake Panier - Premium Bakery & Delivery Service",
+    title: 'Cake Panier - Premium Bakery & Delivery Service',
     description:
-      "Fresh cakes, pastries, beverages & snacks delivered to your door. Specializing in event cakes, savory pies, and artisanal baked goods.",
+      'Fresh cakes, pastries, beverages & snacks delivered to your door. Specializing in event cakes, savory pies, and artisanal baked goods.',
     url: SITE_URL,
-    siteName: "Cake Panier Bakery",
-    type: "website",
-    locale: "en_KE",
+    siteName: 'Cake Panier Bakery',
+    type: 'website',
+    locale: 'en_KE',
     images: [
       {
-        url: "/hero-bakery.jpg", // Use a local high-quality image as default OG
+        url: '/hero-bakery.jpg', // Use a local high-quality image as default OG
         width: 1200,
         height: 630,
-        alt: "Cake Panier Bakery - Fresh Cakes and Pastries",
+        alt: 'Cake Panier Bakery - Fresh Cakes and Pastries',
       },
     ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "Cake Panier - Premium Bakery & Delivery",
-    description:
-      "Fresh cakes, pastries & snacks with delivery. Event cakes, beef pies, pizza & more!",
-    creator: "@cakepanier",
-    images: ["/hero-bakery.jpg"],
+    card: 'summary_large_image',
+    title: 'Cake Panier - Premium Bakery & Delivery',
+    description: 'Fresh cakes, pastries & snacks with delivery. Event cakes, beef pies, pizza & more!',
+    creator: '@cakepanier',
+    images: ['/hero-bakery.jpg'],
   },
   robots: {
     index: true,
@@ -86,66 +83,58 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
     },
   },
-  category: "food",
+  category: 'food',
 };
 
 // Next.js 14+ best practice for viewport settings
 export const viewport: Viewport = {
-  themeColor: "#ffffff", // Update with your brand color
-  width: "device-width",
+  themeColor: '#ffffff', // Update with your brand color
+  width: 'device-width',
   initialScale: 1,
   maximumScale: 5,
 };
 
 // Enterprise SEO: JSON-LD Structured Data for Local Businesses
 const localBusinessSchema = {
-  "@context": "https://schema.org",
-  "@type": ["Bakery", "CafeOrCoffeeShop"],
-  name: "Cake Panier",
+  '@context': 'https://schema.org',
+  '@type': ['Bakery', 'CafeOrCoffeeShop'],
+  name: 'Cake Panier',
   image: [
-    "https://cdn.sanity.io/images/7rkl59hi/production/a5c0fa6115fafb5d79fb5f1b1bbe623d57d33d05-1905x991.png?auto=format&fmt=webp",
-    "https://cdn.sanity.io/images/7rkl59hi/production/4c3e8f308baec02e30cab2a5a2ffd98235db4129-3024x4032.jpg?auto=format&fmt=webp",
+    'https://cdn.sanity.io/images/7rkl59hi/production/a5c0fa6115fafb5d79fb5f1b1bbe623d57d33d05-1905x991.png?auto=format&fmt=webp',
+    'https://cdn.sanity.io/images/7rkl59hi/production/4c3e8f308baec02e30cab2a5a2ffd98235db4129-3024x4032.jpg?auto=format&fmt=webp',
   ],
-  "@id": `${SITE_URL}/#bakery`,
+  '@id': `${SITE_URL}/#bakery`,
   url: SITE_URL,
-  telephone: "+254 114020977",
-  priceRange: "KSh",
+  telephone: '+254 114020977',
+  priceRange: 'KSh',
   address: {
-    "@type": "PostalAddress",
-    streetAddress: "Cheptulu",
-    addressLocality: "Kaimosi",
-    addressRegion: "Vihiga", // Adjust county if needed
-    addressCountry: "KE",
+    '@type': 'PostalAddress',
+    streetAddress: 'Cheptulu',
+    addressLocality: 'Kaimosi',
+    addressRegion: 'Vihiga', // Adjust county if needed
+    addressCountry: 'KE',
   },
   geo: {
-    "@type": "GeoCoordinates",
+    '@type': 'GeoCoordinates',
     latitude: 0.1345, // TODO: Update with actual coordinates for Kaimosi map pin
     longitude: 34.84,
   },
   openingHoursSpecification: [
     {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday",
-      ],
-      opens: "08:00",
-      closes: "20:00",
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '08:00',
+      closes: '20:00',
     },
   ],
-  servesCuisine: ["Bakery", "Pastries", "Coffee", "Fast Food"],
-  acceptsReservations: "False",
-  menu: `${SITE_URL}/products`, 
+  servesCuisine: ['Bakery', 'Pastries', 'Coffee', 'Fast Food'],
+  acceptsReservations: 'False',
+  menu: `${SITE_URL}/products`,
 };
 
 export default function RootLayout({
@@ -164,7 +153,6 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessSchema),
           }}
         />
-        <DealioCustomerSync />
         <NuqsAdapter>{children}</NuqsAdapter>
         <Footer />
       </body>

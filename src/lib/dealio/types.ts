@@ -153,6 +153,36 @@ export interface DealioCartResponse {
   data: DealioCart;
 }
 
+export interface DealioFavorite {
+  id: string;
+  productId: string;
+  createdAt: string;
+}
+
+export interface DealioFavoritesResponse {
+  success: boolean;
+  data: DealioFavorite[];
+}
+
+export interface DealioReview {
+  id: string;
+  rating: number;
+  title?: string;
+  comment?: string;
+  helpful_count: number;
+  verified_purchase: boolean;
+  created_at: string;
+  customer_profiles: {
+    first_name?: string;
+    last_name?: string;
+  } | null;
+}
+
+export interface DealioReviewsResponse {
+  success: boolean;
+  data: DealioReview[];
+}
+
 export interface DealioCheckoutPayment {
   method: 'CASH' | 'MPESA' | 'CARD';
   amount: number;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Star, Plus, ThumbsUp, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,22 +9,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
-interface Review {
-  id: string;
-  rating: number;
-  title?: string;
-  comment?: string;
-  helpful_count: number;
-  verified_purchase: boolean;
-  created_at: string;
-  customer_profiles: {
-    first_name?: string;
-    last_name?: string;
-  } | null;
-}
+import { useReviews } from '@/hooks/useReviews';
+import { DealioReview } from '@/lib/dealio/types';
 
 interface ProductReviewsProps {
   productId: string;
@@ -32,9 +19,7 @@ interface ProductReviewsProps {
 }
 
 export const ProductReviews = ({ productId, productName }: ProductReviewsProps) => {
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const { reviews, loading, submitReview } = useReviews(productId);
   const [showReviewDialog, setShowReviewDialog] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     rating: 5,
@@ -45,15 +30,6 @@ export const ProductReviews = ({ productId, productName }: ProductReviewsProps) 
   const { toast } = useToast();
 
   const handleSubmitReview = async () => {
-    if (!user) {
-      toast({
-        title: 'Sign in required',
-        description: 'Please sign in to leave a review',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     if (!reviewForm.comment.trim()) {
       toast({
         title: 'Review required',
@@ -64,35 +40,12 @@ export const ProductReviews = ({ productId, productName }: ProductReviewsProps) 
     }
 
     setSubmitting(true);
-    try {
-      const { error } = await supabase.from('product_reviews').insert({
-        product_id: productId,
-        user_id: user.id,
-        rating: reviewForm.rating,
-        title: reviewForm.title || null,
-        comment: reviewForm.comment,
-        verified_purchase: false, // You could implement logic to check this
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: 'Review submitted!',
-        description: 'Thank you for your feedback',
-      });
-
+    const success = await submitReview(reviewForm);
+    if (success) {
       setShowReviewDialog(false);
       setReviewForm({ rating: 5, title: '', comment: '' });
-    } catch (error) {
-      console.error('Error submitting review:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to submit review. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setSubmitting(false);
     }
+    setSubmitting(false);
   };
 
   const averageRating =
@@ -120,7 +73,7 @@ export const ProductReviews = ({ productId, productName }: ProductReviewsProps) 
               Write Review
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="sm:max-w-106.25">
             <DialogHeader>
               <DialogTitle>Write a Review for {productName}</DialogTitle>
             </DialogHeader>
