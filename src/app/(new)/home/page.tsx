@@ -79,7 +79,7 @@ export default function Home() {
               <div className="group cursor-pointer">
                 <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
                   <Image
-                    src="https://images.unsplash.com/photo-1589367920969-ab8e050bf0ef?q=80&w=800&auto=format&fit=crop"
+                    src="https://images.pexels.com/photos/16125451/pexels-photo-16125451.jpeg"
                     alt="Signature Sourdough"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"

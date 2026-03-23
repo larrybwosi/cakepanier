@@ -9,37 +9,11 @@ export default function OurCraft() {
     <div
       className={`${notoSerif.variable} ${plusJakarta.variable} font-sans bg-[#fdf9f0] text-[#1c1c17] min-h-screen selection:bg-[#e2e2b4] selection:text-[#8f4900]`}
     >
-      {/* HEADER */}
-      <header className="max-w-7xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-6 absolute top-0 left-0 right-0 z-50 text-white">
-        {/* We use white text here to contrast over the dark hero image */}
-        <div className="font-serif text-2xl font-bold tracking-tight text-white drop-shadow-md">Artisanal Flourish</div>
-        <nav className="flex gap-8 text-sm font-medium drop-shadow-md">
-          <a href="#" className="hover:text-[#e2e2b4] transition-colors">
-            Home
-          </a>
-          <a href="#" className="hover:text-[#e2e2b4] transition-colors">
-            Menu
-          </a>
-          <a href="#" className="text-white border-b-2 border-white pb-1">
-            Our Craft
-          </a>
-          <a href="#" className="hover:text-[#e2e2b4] transition-colors">
-            Cakes
-          </a>
-          <a href="#" className="hover:text-[#e2e2b4] transition-colors">
-            Find Us
-          </a>
-        </nav>
-        <button className="bg-[#8f4900] text-white px-6 py-2 rounded-md font-medium text-sm hover:opacity-90 transition-opacity border border-white/20 shadow-lg">
-          Order Now
-        </button>
-      </header>
-
       <main>
         {/* HERO SECTION */}
-        <section className="relative w-full h-[70vh] min-h-[600px] flex items-center justify-center text-center">
+        <section className="relative w-full h-[70vh] min-h-150 flex items-center justify-center text-center">
           <Image
-            src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2000&auto=format&fit=crop"
+            src="https://cdn.sanity.io/images/7rkl59hi/production/b91dec3fdfe4bed1d931ba591eed84649eab389c-512x512.png?fm=webp&q=80"
             alt="Baker dusting flour"
             fill
             className="object-cover object-center"
@@ -67,9 +41,9 @@ export default function OurCraft() {
         {/* SECTION 1: 72-Hour Ferment (Asymmetric Left Image) */}
         <section className="max-w-7xl mx-auto px-6 py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="relative h-[500px] w-full rounded-xl overflow-hidden shadow-sm">
+            <div className="relative h-125 w-full rounded-xl overflow-hidden shadow-sm">
               <Image
-                src="https://images.unsplash.com/photo-1506084868230-bb9d95c24759?q=80&w=1000&auto=format&fit=crop"
+                src="https://images.pexels.com/photos/34938516/pexels-photo-34938516.jpeg"
                 alt="Active sourdough starter bubbling"
                 fill
                 className="object-cover"
@@ -136,9 +110,9 @@ export default function OurCraft() {
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
               {/* Top Left: Master Baker */}
-              <div className="md:col-span-8 relative rounded-xl overflow-hidden h-[400px] shadow-sm group cursor-pointer">
+              <div className="md:col-span-8 relative rounded-xl overflow-hidden h-100 shadow-sm group cursor-pointer">
                 <Image
-                  src="https://images.unsplash.com/photo-1586444248902-2f64eddc13bf?q=80&w=1200&auto=format&fit=crop"
+                  src="https://images.pexels.com/photos/36445287/pexels-photo-36445287.jpeg"
                   alt="Master Baker scoring dough"
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -235,7 +209,7 @@ export default function OurCraft() {
                 </div>
               </div>
             </div>
-            <div className="relative h-[450px] w-full rounded-xl overflow-hidden shadow-sm">
+            <div className="relative h-112.5 w-full rounded-xl overflow-hidden shadow-sm">
               <Image
                 src="https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?q=80&w=1200&auto=format&fit=crop"
                 alt="Fresh baked bread cooling"
