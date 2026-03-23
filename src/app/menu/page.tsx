@@ -29,7 +29,7 @@ export default function Home() {
             Find Us
           </a>
         </nav>
-        <button className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#8f4900] to-[#b35e04] text-white px-6 py-2.5 rounded-[1.5rem] font-medium text-sm shadow-[0_8px_32px_rgba(28,28,23,0.05)] hover:scale-[1.02] transition-transform">
+        <button className="bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-[#8f4900] to-[#b35e04] text-white px-6 py-2.5 rounded-3xl font-medium text-sm shadow-[0_8px_32px_rgba(28,28,23,0.05)] hover:scale-[1.02] transition-transform">
           Order Now
         </button>
       </header>
@@ -60,7 +60,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Bread Card 1 */}
             <div className="group cursor-pointer">
-              <div className="bg-[#ffffff] rounded-[1.5rem] overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
+              <div className="bg-[#ffffff] rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
                 <div className="relative h-64 w-full">
                   <div className="absolute top-4 left-4 z-10 bg-[#e2e2b4] text-[#1c1c17] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-[16px_8px_16px_8px]">
                     Vegan
@@ -86,7 +86,7 @@ export default function Home() {
 
             {/* Bread Card 2 */}
             <div className="group cursor-pointer">
-              <div className="bg-[#ffffff] rounded-[1.5rem] overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
+              <div className="bg-[#ffffff] rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
                 <div className="relative h-64 w-full">
                   <div className="absolute top-4 left-4 z-10 bg-[#e2e2b4] text-[#1c1c17] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-[16px_8px_16px_8px]">
                     Vegan
@@ -112,7 +112,7 @@ export default function Home() {
 
             {/* Bread Card 3 */}
             <div className="group cursor-pointer">
-              <div className="bg-[#ffffff] rounded-[1.5rem] overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
+              <div className="bg-[#ffffff] rounded-3xl overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.03)] transition-transform hover:-translate-y-1">
                 <div className="relative h-64 w-full">
                   <div className="absolute top-4 left-4 z-10 bg-[#e2e2b4] text-[#1c1c17] text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-[16px_8px_16px_8px]">
                     GF Available
@@ -145,8 +145,8 @@ export default function Home() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Featured Left Card */}
-              <div className="bg-[#ffffff] rounded-[1.5rem] p-6 shadow-[0_8px_32px_rgba(28,28,23,0.03)] flex flex-col justify-between">
-                <div className="relative h-72 w-full rounded-[1rem] overflow-hidden mb-6">
+              <div className="bg-[#ffffff] rounded-3xl p-6 shadow-[0_8px_32px_rgba(28,28,23,0.03)] flex flex-col justify-between">
+                <div className="relative h-72 w-full rounded-2xl overflow-hidden mb-6">
                   <Image
                     src="https://images.unsplash.com/photo-1549996647-190b679b33d7?q=80&w=800&auto=format&fit=crop"
                     alt="Classic Butter Croissant"
@@ -171,7 +171,7 @@ export default function Home() {
               {/* Grid Right Cards */}
               <div className="grid grid-cols-2 gap-6">
                 {/* Pastry 1 */}
-                <div className="bg-[#ffffff] rounded-[1.5rem] p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
+                <div className="bg-[#ffffff] rounded-3xl p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
                   <div className="relative h-32 w-full rounded-lg overflow-hidden mb-4">
                     <Image
                       src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?q=80&w=800&auto=format&fit=crop"
@@ -184,7 +184,7 @@ export default function Home() {
                   <span className="font-medium text-[#8f4900] text-sm">$5.25</span>
                 </div>
                 {/* Pastry 2 */}
-                <div className="bg-[#ffffff] rounded-[1.5rem] p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
+                <div className="bg-[#ffffff] rounded-3xl p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
                   <div className="relative h-32 w-full rounded-lg overflow-hidden mb-4">
                     <Image
                       src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=800&auto=format&fit=crop"
@@ -197,7 +197,7 @@ export default function Home() {
                   <span className="font-medium text-[#8f4900] text-sm">$5.50</span>
                 </div>
                 {/* Pastry 3 */}
-                <div className="bg-[#ffffff] rounded-[1.5rem] p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)] relative">
+                <div className="bg-[#ffffff] rounded-3xl p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)] relative">
                   <div className="absolute top-6 left-6 z-10 bg-[#e2e2b4] text-[#1c1c17] text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-[16px_8px_16px_8px]">
                     GF
                   </div>
@@ -213,7 +213,7 @@ export default function Home() {
                   <span className="font-medium text-[#8f4900] text-sm">$4.25</span>
                 </div>
                 {/* Pastry 4 */}
-                <div className="bg-[#ffffff] rounded-[1.5rem] p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
+                <div className="bg-[#ffffff] rounded-3xl p-4 shadow-[0_8px_32px_rgba(28,28,23,0.03)]">
                   <div className="relative h-32 w-full rounded-lg overflow-hidden mb-4">
                     <Image
                       src="https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=800&auto=format&fit=crop"
@@ -239,7 +239,7 @@ export default function Home() {
               <div className="flex flex-col gap-8">
                 {/* No dividers used, adhering to the "No-Divider" Rule */}
                 <div className="flex gap-6 items-start">
-                  <div className="relative h-20 w-24 shrink-0 rounded-[1rem] overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.05)]">
+                  <div className="relative h-20 w-24 shrink-0 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.05)]">
                     <Image
                       src="https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=800&auto=format&fit=crop"
                       alt="Spinach Galette"
@@ -259,7 +259,7 @@ export default function Home() {
                 </div>
 
                 <div className="flex gap-6 items-start">
-                  <div className="relative h-20 w-24 shrink-0 rounded-[1rem] overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.05)]">
+                  <div className="relative h-20 w-24 shrink-0 rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(28,28,23,0.05)]">
                     <Image
                       src="https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?q=80&w=800&auto=format&fit=crop"
                       alt="Avocado Toast"
@@ -317,7 +317,7 @@ export default function Home() {
               </div>
 
               {/* Newsletter Component mapped to surface-container and input rules */}
-              <div className="bg-[#f1eee5] rounded-[1.5rem] p-8">
+              <div className="bg-[#f1eee5] rounded-3xl p-8">
                 <h4 className="font-serif text-[#8f4900] text-xl mb-2">Join our Bakers Club</h4>
                 <p className="text-sm text-[#1c1c17]/70 mb-6">
                   Get notified when fresh batches leave the oven and receive exclusive weekend specials.
@@ -326,9 +326,9 @@ export default function Home() {
                   <input
                     type="email"
                     placeholder="Your email"
-                    className="flex-1 bg-[#ffffff] rounded-[0.75rem] px-4 py-2 border border-[#dbc2b0] border-opacity-15 focus:border-[#60613c] focus:border-opacity-40 focus:ring-0 outline-none text-sm placeholder:text-[#1c1c17]/40 transition-colors"
+                    className="flex-1 bg-[#ffffff] rounded-xl px-4 py-2 border border-[#dbc2b0] border-opacity-15 focus:border-[#60613c] focus:border-opacity-40 focus:ring-0 outline-none text-sm placeholder:text-[#1c1c17]/40 transition-colors"
                   />
-                  <button className="bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#8f4900] to-[#b35e04] text-white px-6 py-2 rounded-[1.5rem] font-medium text-sm shadow-[0_8px_32px_rgba(28,28,23,0.05)] hover:scale-[1.02] transition-transform">
+                  <button className="bg-[radial-gradient(ellipse_at_center,var(--tw-gradient-stops))] from-[#8f4900] to-[#b35e04] text-white px-6 py-2 rounded-3xl font-medium text-sm shadow-[0_8px_32px_rgba(28,28,23,0.05)] hover:scale-[1.02] transition-transform">
                     Join
                   </button>
                 </div>

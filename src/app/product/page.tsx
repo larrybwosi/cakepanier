@@ -34,11 +34,11 @@ export default function ArtisanalFlourishPage() {
   return (
     <>
       <main className="pt-32 pb-24 bg-background">
-        <div className="max-w-screen-2xl mx-auto px-6 md:px-12">
+        <div className="max-w-(--breakpoint-2xl) mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             {/* Image Gallery Section */}
             <div className="lg:col-span-7 relative">
-              <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-sm">
+              <div className="aspect-4/5 overflow-hidden rounded-2xl bg-muted shadow-sm">
                 <img
                   alt="Signature Sourdough Loaf"
                   className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
@@ -208,7 +208,7 @@ export default function ArtisanalFlourishPage() {
 
         {/* Baker's Notes Section */}
         <section className="mt-32 bg-muted/30 py-24">
-          <div className="max-w-screen-2xl mx-auto px-12">
+          <div className="max-w-(--breakpoint-2xl) mx-auto px-12">
             <div className="flex flex-col md:flex-row gap-16">
               <div className="flex-1 space-y-8">
                 <h2 className="text-4xl font-bold tracking-tight">Baker's Notes</h2>
@@ -256,7 +256,7 @@ export default function ArtisanalFlourishPage() {
         </section>
 
         {/* Pairings Section */}
-        <section className="py-32 max-w-screen-2xl mx-auto px-12">
+        <section className="py-32 max-w-(--breakpoint-2xl) mx-auto px-12">
           <h2 className="text-4xl font-bold tracking-tight text-center mb-16">Perfect Pairings</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -289,7 +289,7 @@ export default function ArtisanalFlourishPage() {
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     src={`http://googleusercontent.com/profile/picture/${item.img}`}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent opacity-60" />
+                  <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-60" />
                 </div>
                 <div className="p-6 text-center space-y-3">
                   <h3 className="text-xl font-bold">{item.name}</h3>
@@ -308,7 +308,7 @@ export default function ArtisanalFlourishPage() {
       </main>
 
       <footer className="bg-muted/50 border-t border-border py-16 px-12">
-        <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="max-w-(--breakpoint-2xl) mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="space-y-2 text-center md:text-left">
             <div className="text-xl font-bold tracking-tighter">Artisanal Flourish</div>
             <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">

@@ -143,7 +143,7 @@ export default function OurCraft() {
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 p-8 text-white max-w-lg">
                   <h3 className="font-serif text-3xl mb-3">Master Baker Elias Thorne</h3>
                   <p className="text-white/80 text-sm leading-relaxed mb-4">

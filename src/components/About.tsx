@@ -62,7 +62,7 @@ const About = () => {
                   'Sustainable packaging',
                 ].map((item, i) => (
                   <div key={i} className="flex items-start space-x-3">
-                    <div className="mt-0.5 flex-shrink-0 w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
+                    <div className="mt-0.5 shrink-0 w-5 h-5 bg-primary/10 rounded flex items-center justify-center">
                       <Check className="w-3.5 h-3.5 text-primary" />
                     </div>
                     <span className="text-foreground text-sm font-medium">{item}</span>

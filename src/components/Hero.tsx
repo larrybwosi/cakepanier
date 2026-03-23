@@ -17,7 +17,7 @@ const Hero = () => {
           sizes="100vw"
         />
         {/* Smoothed gradient for a warmer, richer text backdrop */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-transparent"></div>
+        <div className="absolute inset-0 bg-linear-to-r from-background/95 via-background/80 to-transparent"></div>
       </div>
 
       {/* Content */}

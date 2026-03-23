@@ -30,7 +30,7 @@ export function ImageLightbox({ images, startIndex, onClose }: ImageLightboxProp
   }, [images.length, onClose]);
 
   return (
-    <div className="fixed inset-0 z-[70] bg-black/98 flex flex-col items-center justify-center animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-70 bg-black/98 flex flex-col items-center justify-center animate-in fade-in duration-200">
       <button
         onClick={onClose}
         className="absolute top-4 right-4 p-3 rounded-md bg-white/10 hover:bg-white/20 text-white transition-colors"

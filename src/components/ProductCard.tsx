@@ -180,7 +180,7 @@ export function ProductCard({
     >
       <CardContent className="p-0 flex flex-col h-full">
         {/* Image */}
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-muted/20">
+        <div className="relative w-full aspect-4/3 overflow-hidden bg-muted/20">
           <Image
             src={image}
             alt={product.name}
