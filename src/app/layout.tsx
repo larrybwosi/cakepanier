@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
-import Footer from '@/components/Footer';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const inter = Inter({
@@ -153,8 +152,9 @@ export default function RootLayout({
             __html: JSON.stringify(localBusinessSchema),
           }}
         />
-        <NuqsAdapter>{children}</NuqsAdapter>
-        <Footer />
+        <NuqsAdapter>
+          {children}
+        </NuqsAdapter>
       </body>
     </html>
   );

@@ -1,10 +1,17 @@
 import Image from 'next/image';
 import { Noto_Serif, Plus_Jakarta_Sans } from 'next/font/google';
+import Link from 'next/link';
+import { getFeaturedCatalogProducts } from '@/lib/dealio/catalog';
+import sanityLoader from '@/lib/sanity-loader';
 
 const notoSerif = Noto_Serif({ subsets: ['latin'], variable: '--font-noto-serif' });
 const plusJakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta' });
 
-export default function Home() {
+export default async function Home() {
+  const { products = [] } = await getFeaturedCatalogProducts({ isFeatured: true, limit: 4 }).catch(() => ({
+    products: [],
+  }));
+
   return (
     <div
       className={`${notoSerif.variable} ${plusJakarta.variable} font-sans bg-[#fdf9f0] text-[#1c1c17] min-h-screen selection:bg-[#e2e2b4] selection:text-[#8f4900]`}
@@ -28,12 +35,16 @@ export default function Home() {
                 neighboring farms.
               </p>
               <div className="flex flex-wrap gap-4 items-center">
-                <button className="bg-[#8f4900] text-white px-8 py-3 rounded-md font-bold text-sm hover:scale-[1.02] shadow-[0_8px_32px_rgba(28,28,23,0.05)] transition-all">
-                  Pre-order Now
-                </button>
-                <button className="bg-transparent text-[#8f4900] border border-[#dbc2b0] px-8 py-3 rounded-md font-bold text-sm hover:bg-[#8f4900]/5 transition-colors">
-                  Explore Menu
-                </button>
+                <Link href="/menu">
+                  <button className="bg-[#8f4900] text-white px-8 py-3 rounded-md font-bold text-sm hover:scale-[1.02] shadow-[0_8px_32px_rgba(28,28,23,0.05)] transition-all">
+                    Pre-order Now
+                  </button>
+                </Link>
+                <Link href="/menu">
+                  <button className="bg-transparent text-[#8f4900] border border-[#dbc2b0] px-8 py-3 rounded-md font-bold text-sm hover:bg-[#8f4900]/5 transition-colors">
+                    Explore Menu
+                  </button>
+                </Link>
               </div>
             </div>
 
@@ -49,107 +60,74 @@ export default function Home() {
                   alt="Fresh artisan sourdough loaf"
                   fill
                   className="object-cover"
-                  priority
                 />
               </div>
 
-              {/* Overlapping offset square image */}
-              <div className="absolute bottom-8 left-0 w-[55%] aspect-square rounded-xl overflow-hidden shadow-[0_16px_40px_rgba(28,28,23,0.15)] border-8 border-[#fdf9f0] z-10">
+              {/* Smaller floating image */}
+              <div className="absolute bottom-4 left-0 w-3/5 h-[45%] rounded-xl overflow-hidden shadow-[24px_24px_64px_rgba(28,28,23,0.12)] border-[8px] border-[#fdf9f0]">
                 <Image
-                  src="https://images.unsplash.com/photo-1549996647-190b679b33d7?q=80&w=800&auto=format&fit=crop"
-                  alt="Assorted sweet pastries"
+                  src="https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop"
+                  alt="Baker's table with flour"
                   fill
                   className="object-cover"
                 />
+              </div>
+
+              {/* Decorative circle/badge */}
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#8f4900] rounded-full flex items-center justify-center text-white text-center p-4 shadow-xl z-20 scale-90 md:scale-100">
+                <p className="text-[10px] font-bold uppercase tracking-widest leading-tight">
+                  Stone Milled <br />
+                  <span className="text-lg font-serif italic lowercase tracking-normal">Grains</span>
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* FEATURED SELECTION SECTION */}
-        <section className="bg-[#f7f3ea] py-24 border-t border-[#dbc2b0]/20">
+        {/* FEATURED PRODUCTS SECTION */}
+        <section className="bg-white py-24">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
-              <h2 className="font-serif text-[#1c1c17] text-4xl mb-4">Featured Selection</h2>
-              <div className="w-12 h-1 bg-[#8f4900] mx-auto rounded-full"></div>
+            <div className="flex flex-col md:flex-row justify-between items-baseline mb-16">
+              <div>
+                <h2 className="font-serif text-[#1c1c17] text-4xl mb-4">Pull Warm From the Oven</h2>
+                <p className="text-[#1c1c17]/60 max-w-sm">Our most-loved daily staples, crafted by hand.</p>
+              </div>
+              <Link href="/menu" className="text-[#8f4900] font-bold text-sm border-b border-[#8f4900] mt-6 md:mt-0">
+                View Full Menu
+              </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {/* Item 1 */}
-              <div className="group cursor-pointer">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
-                  <Image
-                    src="https://images.pexels.com/photos/16125451/pexels-photo-16125451.jpeg"
-                    alt="Signature Sourdough"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="font-serif text-lg text-[#1c1c17]">Signature Sourdough</h3>
-                  <span className="font-bold text-[#8f4900] text-sm">$8.50</span>
-                </div>
-                <p className="text-xs text-[#1c1c17]/60 leading-relaxed">
-                  Our classic loaf, slow-proofed for 24 hours with a crisp, dark crust.
-                </p>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+              {products.map(product => (
+                <Link key={product.id} href={`/product/${product.id}`} className="group cursor-pointer">
+                  <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
+                    <Image
+                      src={product.images?.[0] || 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?q=80&w=800&auto=format&fit=crop'}
+                      alt={product.name}
+                      fill
+                      loader={sanityLoader}
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex justify-between items-baseline mb-2">
+                    <h3 className="font-serif text-lg text-[#1c1c17]">{product.name}</h3>
+                    <span className="font-bold text-[#8f4900] text-sm">
+                      {product.variants?.[0]?.price ? `Ksh ${product.variants[0].price}` : 'Price unavailable'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#1c1c17]/60 leading-relaxed line-clamp-2">
+                    {product.description}
+                  </p>
+                </Link>
+              ))}
 
-              {/* Item 2 */}
-              <div className="group cursor-pointer">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
-                  <Image
-                    src="https://images.unsplash.com/photo-1623334044303-241021148842?q=80&w=800&auto=format&fit=crop"
-                    alt="Almond Croissant"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+              {products.length === 0 && [1, 2, 3, 4].map((i) => (
+                <div key={i} className="group cursor-pointer">
+                  <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4 bg-gray-100 animate-pulse" />
+                  <div className="h-6 w-3/4 bg-gray-100 animate-pulse mb-2" />
+                  <div className="h-4 w-full bg-gray-100 animate-pulse" />
                 </div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="font-serif text-lg text-[#1c1c17]">Almond Croissant</h3>
-                  <span className="font-bold text-[#8f4900] text-sm">$5.75</span>
-                </div>
-                <p className="text-xs text-[#1c1c17]/60 leading-relaxed">
-                  Twice-baked with housemade frangipane and toasted sliced almonds.
-                </p>
-              </div>
-
-              {/* Item 3 */}
-              <div className="group cursor-pointer">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
-                  <Image
-                    src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=800&auto=format&fit=crop"
-                    alt="Seasonal Berry Tart"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="font-serif text-lg text-[#1c1c17]">Seasonal Berry Tart</h3>
-                  <span className="font-bold text-[#8f4900] text-sm">$6.50</span>
-                </div>
-                <p className="text-xs text-[#1c1c17]/60 leading-relaxed">
-                  Shortcrust with Madagascar Vanilla pastry cream and fresh berries.
-                </p>
-              </div>
-
-              {/* Item 4 */}
-              <div className="group cursor-pointer">
-                <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
-                  <Image
-                    src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?q=80&w=800&auto=format&fit=crop"
-                    alt="Honey Brioche"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                </div>
-                <div className="flex justify-between items-baseline mb-2">
-                  <h3 className="font-serif text-lg text-[#1c1c17]">Honey Brioche</h3>
-                  <span className="font-bold text-[#8f4900] text-sm">$4.25</span>
-                </div>
-                <p className="text-xs text-[#1c1c17]/60 leading-relaxed">
-                  Classic French style glazed with local wildflower honey and sea salt.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
