@@ -1,136 +1,94 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { ShoppingBasket, Heart, Wheat, Flame, ChevronRight, Info } from 'lucide-react';
+import Image from 'next/image';
+import { ShoppingBasket, Heart, Wheat, Flame, Info } from 'lucide-react';
+import { getCatalogProduct } from '@/lib/dealio/catalog';
+import sanityLoader from '@/lib/sanity-loader';
+import { notFound } from 'next/navigation';
 
 // Shadcn UI Imports
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 
-export default function ArtisanalFlourishPage() {
-  const [basePrice, setBasePrice] = useState<number>(9.5);
-  const [addons, setAddons] = useState<{ [key: string]: number }>({});
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const handleAddonToggle = (name: string, price: number, isChecked: boolean) => {
-    setAddons(prev => {
-      const newAddons = { ...prev };
-      if (isChecked) {
-        newAddons[name] = price;
-      } else {
-        delete newAddons[name];
-      }
-      return newAddons;
-    });
-  };
+export default async function ProductDetailPage({ params }: PageProps) {
+  const { id } = await params;
 
-  const totalPrice = (basePrice + Object.values(addons).reduce((sum, cost) => sum + cost, 0)).toFixed(2);
+  let product;
+  try {
+    product = await getCatalogProduct(id);
+  } catch (error) {
+    return notFound();
+  }
+
+  const price = product.variants?.[0]?.price || 0;
+  const primaryImage = product.images?.[0] || 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?q=80&w=800&auto=format&fit=crop';
 
   return (
     <>
       <main className="pt-32 pb-24 bg-background">
-        <div className="max-w-(--breakpoint-2xl) mx-auto px-6 md:px-12">
+        <div className="max-w-7xl mx-auto px-6 md:px-12">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
             {/* Image Gallery Section */}
             <div className="lg:col-span-7 relative">
-              <div className="aspect-4/5 overflow-hidden rounded-2xl bg-muted shadow-sm">
-                <img
-                  alt="Signature Sourdough Loaf"
-                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-R4SxVu79Zv8KlMZq3VDme83JqoUdM8R4BZeOD9L0OFU1eUYDT-s7eZnI8KlW4qIf8SsFJvfiVxgsDkRNeYRM5oxMI0lsN3W6nMyamI-GWD6S1GLbt7x49lAv1TnLr-thSlpCl12Kh0hWTfhWN2mDUujzOxPPxxovIfUaSLynfVpuzzytrWLanmazKmr5RnFlmTZU-Kx4aLFEoWg9DKviNQYHhv_mRl6J6pKo8uqhdzIWw4WNmXNjMRNoTDLnSrG2jxQViZ8Xn8Q"
+              <div className="aspect-[4/5] overflow-hidden rounded-2xl bg-muted shadow-sm relative">
+                <Image
+                  alt={product.name}
+                  fill
+                  loader={sanityLoader}
+                  className="object-cover transition-transform duration-700 hover:scale-105"
+                  src={primaryImage}
                 />
               </div>
-              <div className="absolute -bottom-8 -right-8 hidden md:block w-48 h-48 bg-card rounded-xl p-3 shadow-2xl rotate-3 border border-border">
-                <img
-                  alt="Sourdough Texture"
-                  className="w-full h-full object-cover rounded-lg"
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoGDMbUJh7Oc_Aj1LegXlfNEY7URXLLV9aLn5wLdXp_pOZ4PC8th1K9FxUpafJa15LXBeAm1GS2SFKTGmxo0qVTBcdnjJhXDEII6k-UpWy_gUSgkfSR9_qUmLBvrUK8QSaguX_8pICFoOiHRpsBgxTYKFFYlQZoVi-IRZSJ2x2IE37__q_dkuVRoe3zCBNwcfppGsE7jqbys39FC7X_Kk5e4hxrq48EnkyAUJ976qtBL32Yg9TimEDZfSvbLfQYlV4fEJKgXLtsV0"
+              <div className="absolute -bottom-8 -right-8 hidden md:block w-48 h-48 bg-card rounded-xl p-3 shadow-2xl rotate-3 border border-border overflow-hidden">
+                <Image
+                  alt="Detail"
+                  fill
+                  loader={sanityLoader}
+                  className="object-cover"
+                  src={product.images?.[1] || primaryImage}
                 />
               </div>
             </div>
 
-            {/* Product Details Section */}
-            <div className="lg:col-span-5 space-y-8">
-              <nav className="flex items-center space-x-2 text-muted-foreground font-medium uppercase tracking-widest text-[10px]">
-                <Link href="#" className="hover:text-primary transition-colors">
-                  Breads
-                </Link>
-                <ChevronRight className="w-3 h-3" />
-                <Link className="text-primary" href="#">
-                  Signature Series
-                </Link>
-              </nav>
-
+            {/* Product Info Section */}
+            <div className="lg:col-span-5 space-y-10">
               <div className="space-y-4">
-                <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-foreground leading-tight">
-                  Signature Sourdough
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-primary">
+                    Daily Batch: Limited
+                  </span>
+                  <div className="h-px flex-1 bg-border/50" />
+                </div>
+                <h1 className="text-5xl md:text-6xl font-bold tracking-tighter text-foreground">
+                  {product.name}
                 </h1>
-                <div className="flex items-center gap-4">
-                  <span className="text-3xl font-serif italic text-primary">${totalPrice}</span>
-                  <Badge variant="secondary" className="px-3 py-1 rounded-full uppercase tracking-tighter">
-                    Vegan
-                  </Badge>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-3xl font-bold text-primary">Ksh {price}</span>
+                  <span className="text-sm text-muted-foreground line-through decoration-primary/30">
+                    Ksh {Math.round(price * 1.2)}
+                  </span>
                 </div>
               </div>
 
-              <p className="text-lg text-muted-foreground leading-relaxed italic">
-                Our pride and joy. Each loaf is the result of a rigorous 36-hour slow fermentation process, allowing
-                deep, complex flavors to develop naturally.
-              </p>
+              <div className="space-y-6">
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {product.description}
+                </p>
 
-              <Separator className="bg-border/50" />
-
-              {/* Customization Options */}
-              <div className="space-y-8">
-                <div className="space-y-4">
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                    Personalize your Loaf
-                  </h3>
-
-                  {/* Loaf Size */}
+                {/* Configuration */}
+                <div className="space-y-8 pt-6">
+                  {/* Selection */}
                   <div className="space-y-3">
-                    <Label className="text-sm font-bold">Loaf Size</Label>
-                    <RadioGroup
-                      defaultValue="9.5"
-                      onValueChange={v => setBasePrice(parseFloat(v))}
-                      className="grid grid-cols-2 gap-4"
-                    >
-                      <div className="relative">
-                        <RadioGroupItem value="9.5" id="size-std" className="peer sr-only" />
-                        <Label
-                          htmlFor="size-std"
-                          className="flex flex-col p-4 border rounded-xl cursor-pointer peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 hover:bg-muted transition-all"
-                        >
-                          <span className="text-sm font-bold">Standard</span>
-                          <span className="text-xs text-muted-foreground">$9.50</span>
-                        </Label>
-                      </div>
-                      <div className="relative">
-                        <RadioGroupItem value="14.5" id="size-lg" className="peer sr-only" />
-                        <Label
-                          htmlFor="size-lg"
-                          className="flex flex-col p-4 border rounded-xl cursor-pointer peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 hover:bg-muted transition-all"
-                        >
-                          <span className="text-sm font-bold">Large</span>
-                          <span className="text-xs text-muted-foreground">$14.50</span>
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-
-                  {/* Slicing Style */}
-                  <div className="space-y-3">
-                    <Label htmlFor="slicing" className="text-sm font-bold">
-                      Slicing Style
-                    </Label>
+                    <Label className="text-sm font-bold uppercase tracking-widest">Slice Preference</Label>
                     <Select defaultValue="unsliced">
-                      <SelectTrigger id="slicing" className="w-full h-12 rounded-xl border-border">
-                        <SelectValue placeholder="Select slicing style" />
+                      <SelectTrigger className="w-full h-14 rounded-xl border-border bg-card">
+                        <SelectValue placeholder="Select Slicing" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="unsliced">Unsliced (Whole Loaf)</SelectItem>
@@ -140,7 +98,7 @@ export default function ArtisanalFlourishPage() {
                     </Select>
                   </div>
 
-                  {/* Add-ons */}
+                  {/* Add-ons - Simplified for now as it needs client-side state for real functionality */}
                   <div className="space-y-3">
                     <Label className="text-sm font-bold flex items-center gap-2">
                       Artisanal Flourish
@@ -148,24 +106,21 @@ export default function ArtisanalFlourishPage() {
                     </Label>
                     <div className="grid gap-2">
                       {[
-                        { id: 'salt', label: 'Extra Maldon Sea Salt', price: 0.5 },
-                        { id: 'honey', label: 'Honey Glaze Brush', price: 1.0 },
-                        { id: 'seeds', label: 'Toasted Pumpkin Seeds', price: 1.5 },
+                        { id: 'salt', label: 'Extra Maldon Sea Salt', price: 50 },
+                        { id: 'honey', label: 'Honey Glaze Brush', price: 100 },
+                        { id: 'seeds', label: 'Toasted Pumpkin Seeds', price: 150 },
                       ].map(addon => (
                         <div
                           key={addon.id}
                           className="flex items-center justify-between p-3 rounded-xl border border-transparent hover:border-border hover:bg-muted/50 transition-all"
                         >
                           <div className="flex items-center space-x-3">
-                            <Checkbox
-                              id={addon.id}
-                              onCheckedChange={checked => handleAddonToggle(addon.id, addon.price, !!checked)}
-                            />
+                            <Checkbox id={addon.id} />
                             <Label htmlFor={addon.id} className="text-sm cursor-pointer">
                               {addon.label}
                             </Label>
                           </div>
-                          <span className="text-xs font-semibold text-primary">+${addon.price.toFixed(2)}</span>
+                          <span className="text-xs font-semibold text-primary">+Ksh {addon.price}</span>
                         </div>
                       ))}
                     </div>
@@ -208,7 +163,7 @@ export default function ArtisanalFlourishPage() {
 
         {/* Baker's Notes Section */}
         <section className="mt-32 bg-muted/30 py-24">
-          <div className="max-w-(--breakpoint-2xl) mx-auto px-12">
+          <div className="max-w-7xl mx-auto px-12">
             <div className="flex flex-col md:flex-row gap-16">
               <div className="flex-1 space-y-8">
                 <h2 className="text-4xl font-bold tracking-tight">Baker's Notes</h2>
@@ -256,27 +211,27 @@ export default function ArtisanalFlourishPage() {
         </section>
 
         {/* Pairings Section */}
-        <section className="py-32 max-w-(--breakpoint-2xl) mx-auto px-12">
+        <section className="py-32 max-w-7xl mx-auto px-12">
           <h2 className="text-4xl font-bold tracking-tight text-center mb-16">Perfect Pairings</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 name: 'Wildflower Honey',
                 desc: 'Locally sourced, floral sweetness that balances the sourdough tang.',
-                price: 12,
-                img: '2',
+                price: 120,
+                img: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?q=80&w=800&auto=format&fit=crop',
               },
               {
                 name: 'Cultured Butter',
                 desc: 'Hand-churned with sea salt flakes. High butterfat content for richness.',
-                price: 8,
-                img: '3',
+                price: 80,
+                img: 'https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?q=80&w=800&auto=format&fit=crop',
               },
               {
                 name: 'Maldon Sea Salt',
                 desc: 'Crunchy pyramid-shaped flakes to elevate every buttered slice.',
-                price: 5,
-                img: '4',
+                price: 50,
+                img: 'https://images.unsplash.com/photo-161308226503b-0f4014a7a339?q=80&w=800&auto=format&fit=crop',
               },
             ].map(item => (
               <div
@@ -284,10 +239,11 @@ export default function ArtisanalFlourishPage() {
                 className="group bg-card border border-border/40 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-500"
               >
                 <div className="aspect-square relative overflow-hidden">
-                  <img
+                  <Image
                     alt={item.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    src={`http://googleusercontent.com/profile/picture/${item.img}`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    src={item.img}
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-background via-transparent to-transparent opacity-60" />
                 </div>
@@ -298,7 +254,7 @@ export default function ArtisanalFlourishPage() {
                     variant="link"
                     className="text-primary font-bold uppercase text-[10px] tracking-widest p-0 h-auto"
                   >
-                    Add to Box +${item.price}
+                    Add to Box +Ksh {item.price}
                   </Button>
                 </div>
               </div>
@@ -308,7 +264,7 @@ export default function ArtisanalFlourishPage() {
       </main>
 
       <footer className="bg-muted/50 border-t border-border py-16 px-12">
-        <div className="max-w-(--breakpoint-2xl) mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="space-y-2 text-center md:text-left">
             <div className="text-xl font-bold tracking-tighter">Artisanal Flourish</div>
             <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em]">
