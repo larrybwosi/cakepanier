@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { GoogleAnalytics } from '@next/third-parties/google';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
-import Footer from '@/components/Footer';
-import { FooterHider } from './(new)/_components/FooterHider';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 const inter = Inter({
@@ -155,10 +153,8 @@ export default function RootLayout({
           }}
         />
         <NuqsAdapter>
-          <FooterHider />
           {children}
         </NuqsAdapter>
-        <Footer />
       </body>
     </html>
   );

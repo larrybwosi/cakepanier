@@ -1,73 +1,64 @@
-# Welcome to your Lovable project
+# Artisanal Flourish (Cake Panier)
 
-## Project info
+Artisanal Flourish is a premium bakery and café digital experience, specializing in handcrafted sourdough breads, bespoke celebration cakes, and artisanal pastries. This platform bridges the traditional craft of slow-fermentation baking with a modern, high-performance e-commerce engine powered by the Dealio API.
 
-**URL**: https://lovable.dev/projects/aaec2aba-8c67-4e4e-ba2f-2d124b87ef68
+## 🥖 Features
 
-## How can I edit this code?
+- **Live Product Catalog:** Dynamically synchronized with the Dealio Catalog API, featuring real-time availability for breads, pastries, and treats.
+- **Bespoke Cake Inquiries:** A dedicated inquiry system for custom celebration cakes, integrated with the Dealio CRM for lead management.
+- **Artisanal Box (Cart):** A seamless "build your box" experience with persistent cart logic and price calculation.
+- **Modern Tech Stack:** Built with Next.js 15 for server-side performance and optimized image delivery through Sanity CDN.
+- **Visual Identity:** A warm, artisanal design language using Noto Serif and Plus Jakarta Sans typography.
 
-There are several ways of editing your application.
+## 🛠️ Tech Stack
 
-**Use Lovable**
+- **Framework:** [Next.js 15+](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
+- **Components:** [shadcn/ui](https://ui.shadcn.com/)
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Authentication:** [Logto](https://logto.io/)
+- **Backend/API:** [Dealio v2 API](https://dealio.com/)
+- **CMS/Images:** [Sanity.io](https://www.sanity.io/)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/aaec2aba-8c67-4e4e-ba2f-2d124b87ef68) and start prompting.
+## 🚀 Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js 20+
+- pnpm (recommended) or npm
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+# Clone the repository
+git clone <repository-url>
 
-Follow these steps:
+# Install dependencies
+pnpm install
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Set up environment variables
+cp .env.example .env.local
 ```
 
-**Edit a file directly in GitHub**
+### Development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Start the development server
+pnpm dev
+```
 
-**Use GitHub Codespaces**
+The application will be available at [http://localhost:3000](http://localhost:3000).
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🌍 Environment Variables
 
-## What technologies are used for this project?
+Ensure the following variables are set in your `.env` file for full API functionality:
 
-This project is built with:
+- `DEALIO_API_BASE`: The base URL for the Dealio API.
+- `DEALIO_CLIENT_ID`: Your Dealio application client ID.
+- `DEALIO_CLIENT_SECRET`: Your Dealio application client secret.
+- `NEXT_PUBLIC_LOGTO_APP_ID`: Logto authentication app ID.
+- `LOGTO_COOKIE_SECRET`: Secret key for session cookies.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 📄 License
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/aaec2aba-8c67-4e4e-ba2f-2d124b87ef68) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+© 2026 Artisanal Flourish Bakery. All rights reserved.
