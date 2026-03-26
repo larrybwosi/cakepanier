@@ -1,0 +1,119 @@
+@import "@repo/ui/globals.css";
+
+@utility bakery-gradient {
+  background: var(--gradient-warm);
+}
+
+@utility bakery-card {
+  @apply bg-card rounded-xl p-6 shadow-soft hover-lift;
+  @media (max-width: 768px) {
+    @apply active:scale-95 transition-transform duration-150;
+  }
+}
+
+@layer base {
+  :root {
+    /* Bakery Color Palette */
+    --background: 42 78% 95%;           /* Warm cream */
+    --foreground: 25 20% 20%;           /* Rich brown */
+
+    --card: 43 74% 97%;                 /* Light cream */
+    --card-foreground: 25 20% 20%;
+
+    --popover: 43 74% 97%;
+    --popover-foreground: 25 20% 20%;
+
+    /* Primary - Golden brown for CTAs and highlights */
+    --primary: 35 45% 65%;              /* Golden brown */
+    --primary-foreground: 43 74% 97%;
+
+    /* Secondary - Soft orange for accents */
+    --secondary: 24 85% 70%;            /* Warm orange */
+    --secondary-foreground: 25 20% 20%;
+
+    /* Muted tones for subtle elements */
+    --muted: 42 45% 92%;                /* Soft cream */
+    --muted-foreground: 25 15% 45%;
+
+    /* Accent - Deep bakery brown */
+    --accent: 25 35% 35%;               /* Deep brown */
+    --accent-foreground: 43 74% 97%;
+
+    /* Hero variant for standout elements */
+    --hero: 35 55% 55%;                 /* Rich golden */
+    --hero-foreground: 43 74% 97%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 43 74% 97%;
+
+    --border: 42 35% 85%;
+    --input: 42 35% 88%;
+    --ring: 35 45% 65%;
+
+    --radius: 0.75rem;
+
+    /* Bakery gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(42 78% 95%), hsl(35 45% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(35 55% 55%), hsl(24 85% 70%));
+    --gradient-subtle: linear-gradient(180deg, hsl(43 74% 97%), hsl(42 45% 92%));
+
+    /* Shadows with warm tones */
+    --shadow-warm: 0 4px 20px -2px hsl(35 45% 65% / 0.15);
+    --shadow-soft: 0 2px 10px -1px hsl(25 20% 20% / 0.08);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    /* Dark mode with warm undertones for evening bakery ambiance */
+    --background: 25 15% 8%;             /* Dark warm brown */
+    --foreground: 43 74% 97%;            /* Cream text */
+
+    --card: 25 20% 12%;
+    --card-foreground: 43 74% 97%;
+
+    --popover: 25 20% 12%;
+    --popover-foreground: 43 74% 97%;
+
+    --primary: 35 55% 65%;               /* Golden brown stays prominent */
+    --primary-foreground: 25 15% 8%;
+
+    --secondary: 24 75% 65%;             /* Softer orange for dark mode */
+    --secondary-foreground: 25 15% 8%;
+
+    --muted: 25 15% 15%;
+    --muted-foreground: 42 25% 65%;
+
+    --accent: 35 45% 75%;                /* Lighter golden for dark mode */
+    --accent-foreground: 25 15% 8%;
+
+    --hero: 35 65% 70%;                  /* Brighter hero for dark mode */
+    --hero-foreground: 25 15% 8%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 43 74% 97%;
+
+    --border: 25 15% 20%;
+    --input: 25 15% 18%;
+    --ring: 35 55% 65%;
+
+    /* Dark mode gradients */
+    --gradient-warm: linear-gradient(135deg, hsl(25 15% 8%), hsl(25 20% 15%));
+    --gradient-hero: linear-gradient(135deg, hsl(35 65% 70%), hsl(24 75% 65%));
+    --gradient-subtle: linear-gradient(180deg, hsl(25 20% 12%), hsl(25 15% 15%));
+
+    /* Dark shadows */
+    --shadow-warm: 0 4px 20px -2px hsl(0 0% 0% / 0.4);
+    --shadow-soft: 0 2px 10px -1px hsl(0 0% 0% / 0.2);
+  }
+}
