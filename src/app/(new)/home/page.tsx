@@ -102,7 +102,10 @@ export default async function Home() {
                 <Link key={product.id} href={`/product/${product.id}`} className="group cursor-pointer">
                   <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4">
                     <Image
-                      src={product.images?.[0] || 'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?q=80&w=800&auto=format&fit=crop'}
+                      src={
+                        product.images?.[0] ||
+                        'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?q=80&w=800&auto=format&fit=crop'
+                      }
                       alt={product.name}
                       fill
                       loader={sanityLoader}
@@ -115,19 +118,18 @@ export default async function Home() {
                       {product.variants?.[0]?.price ? `Ksh ${product.variants[0].price}` : 'Price unavailable'}
                     </span>
                   </div>
-                  <p className="text-xs text-[#1c1c17]/60 leading-relaxed line-clamp-2">
-                    {product.description}
-                  </p>
+                  <p className="text-xs text-[#1c1c17]/60 leading-relaxed line-clamp-2">{product.description}</p>
                 </Link>
               ))}
 
-              {products.length === 0 && [1, 2, 3, 4].map((i) => (
-                <div key={i} className="group cursor-pointer">
-                  <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4 bg-gray-100 animate-pulse" />
-                  <div className="h-6 w-3/4 bg-gray-100 animate-pulse mb-2" />
-                  <div className="h-4 w-full bg-gray-100 animate-pulse" />
-                </div>
-              ))}
+              {products.length === 0 &&
+                [1, 2, 3, 4].map(i => (
+                  <div key={i} className="group cursor-pointer">
+                    <div className="relative h-64 w-full rounded-xl overflow-hidden shadow-sm mb-4 bg-gray-100 animate-pulse" />
+                    <div className="h-6 w-3/4 bg-gray-100 animate-pulse mb-2" />
+                    <div className="h-4 w-full bg-gray-100 animate-pulse" />
+                  </div>
+                ))}
             </div>
           </div>
         </section>
@@ -135,11 +137,12 @@ export default async function Home() {
         {/* HERITAGE SECTION */}
         <section className="max-w-7xl mx-auto px-6 py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div className="relative h-[600px] w-full rounded-xl overflow-hidden shadow-sm">
+            <div className="relative h-100 w-full rounded-xl overflow-hidden shadow-sm">
               <Image
-                src="https://images.unsplash.com/photo-1586444248902-2f64eddc13bf?q=80&w=1000&auto=format&fit=crop"
+                src="https://cdn.sanity.io/images/7rkl59hi/production/114db6968b271bfbeccfe14aeed710216bd6b681-6720x4480.jpg?fm=webp&q=80&w=600&h=400"
                 alt="Baker shaping dough on a wooden table"
-                fill
+                width={600}
+                height={400}
                 className="object-cover"
               />
               <div className="absolute bottom-6 right-6 bg-[#8f4900] text-white px-6 py-4 rounded-xl shadow-lg font-serif text-lg tracking-wide z-10">
