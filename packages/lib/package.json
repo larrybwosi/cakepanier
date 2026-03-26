@@ -1,0 +1,37 @@
+{
+  "name": "@repo/lib",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    "./actions/auth": "./src/actions/auth.ts",
+    "./dealio/cart": "./src/dealio/cart.ts",
+    "./dealio/catalog": "./src/dealio/catalog.ts",
+    "./dealio/customers": "./src/dealio/customers.ts",
+    "./dealio/errors": "./src/dealio/errors.ts",
+    "./dealio/favorites": "./src/dealio/favorites.ts",
+    "./dealio/inquiry.actions": "./src/dealio/inquiry.actions.ts",
+    "./dealio/inventory": "./src/dealio/inventory.ts",
+    "./dealio/list.actions": "./src/dealio/list.actions.ts",
+    "./dealio/orders": "./src/dealio/orders.ts",
+    "./dealio/reviews": "./src/dealio/reviews.ts",
+    "./dealio/token": "./src/dealio/token.ts",
+    "./dealio/types": "./src/dealio/types.ts",
+    "./auth/permissions": "./src/auth/permissions.ts",
+    "./utils": "./src/utils.ts",
+    "./logto.config": "./src/logto.config.ts",
+    "./sanity-loader": "./src/sanity-loader.ts"
+  },
+  "dependencies": {
+    "next": "^16.2.1",
+    "react": "^19.2.4",
+    "zod": "^3.25.76",
+    "better-auth": "^1.4.19",
+    "@logto/next": "^4.2.9",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.1"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}
