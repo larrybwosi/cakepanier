@@ -60,7 +60,7 @@ export async function createDealioCustomer(
 
 /**
  * Upserts: finds existing customer by email or creates a new one.
- * Returns the Dealio customer ID for storage in Supabase.
+ * Returns the Dealio customer ID for storage in the local system.
  */
 export async function syncDealioCustomer(
   payload: DealioCustomerCreatePayload,

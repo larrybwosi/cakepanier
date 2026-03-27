@@ -8,11 +8,11 @@ const LOCATION_ID = process.env.DEALIO_LOCATION_ID ?? '';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { supabaseOrderId, customerId, items, notes, shippingTotal, discountTotal } = body;
+    const { externalOrderId, customerId, items, notes, shippingTotal, discountTotal } = body;
 
-    if (!supabaseOrderId || !items?.length) {
+    if (!externalOrderId || !items?.length) {
       return NextResponse.json(
-        { error: 'VALIDATION', message: 'supabaseOrderId and items are required' },
+        { error: 'VALIDATION', message: 'externalOrderId and items are required' },
         { status: 400 }
       );
     }
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
     // Submit to Dealio — externalOrderId ensures idempotency
     const dealioOrder = await createDealioOrder({
-      externalOrderId: supabaseOrderId,
+      externalOrderId: externalOrderId,
       locationId: LOCATION_ID,
       customerId: customerId ?? undefined,
       items,
