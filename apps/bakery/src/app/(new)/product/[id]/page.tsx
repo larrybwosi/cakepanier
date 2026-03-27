@@ -5,6 +5,7 @@ import { getCatalogProduct } from '@repo/lib/dealio/catalog';
 import { notFound } from 'next/navigation';
 import ProductDetailClient from './ProductDetailClient';
 import Image from 'next/image';
+import { Button } from '@repo/ui/components/ui/button';
 
 interface PageProps {
   params: Promise<{ id: string }>;

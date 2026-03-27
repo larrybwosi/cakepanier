@@ -313,10 +313,10 @@ export function ProductDetailClient({ product, inventoryMap }: Props) {
                 {/* Stock Status & Action (Desktop Only Actions) */}
                 <div className="space-y-6">
                   <div className="min-h-6 flex items-center">
-                    {inventoryStatus === 'low' && (
+                    {inventoryStatus === 'low' && selectedVariant && (
                       <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm font-medium bg-amber-50 dark:bg-amber-950/30 px-3 py-1.5 rounded-sm w-fit">
                         <AlertCircle className="h-4 w-4" />
-                        Only {inventoryMap[selectedVariant?.id]?.totalStock || selectedVariant?.totalStock} left — order
+                        Only {inventoryMap[selectedVariant.id]?.totalStock || selectedVariant.totalStock} left — order
                         soon
                       </div>
                     )}
@@ -459,7 +459,6 @@ export function ProductDetailClient({ product, inventoryMap }: Props) {
                       // Images inside markdown
                       img: ({ src, alt }) => (
                         <span className="block my-8 rounded-xl overflow-hidden border border-border/40 shadow-sm">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={src}
                             alt={alt}
