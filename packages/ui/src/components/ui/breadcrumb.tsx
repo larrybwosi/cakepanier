@@ -1,8 +1,10 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
+import { Slot as SlotPrimitive } from "radix-ui"
 import { ChevronRight, MoreHorizontal } from "lucide-react"
 
 import { cn } from "@repo/ui/lib/utils"
+
+const Slot = SlotPrimitive.Slot
 
 const Breadcrumb = React.forwardRef<
   HTMLElement,

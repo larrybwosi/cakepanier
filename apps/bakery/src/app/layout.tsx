@@ -3,8 +3,8 @@ import { GoogleAnalytics } from '@next/third-parties/google';
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { BrandProvider } from "@repo/ui/lib/brand-context";
-import { Wheat } from "lucide-react";
+import { BrandProvider } from '@repo/ui/lib/brand-context';
+import { Wheat } from 'lucide-react';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -151,20 +151,25 @@ export default function RootLayout({
           }}
         />
         <NuqsAdapter>
-          <BrandProvider config={{
-            name: "Cake Panier",
-            logo: <Wheat className="h-8 w-8 text-primary" />,
-            phone: "+254 114020977",
-            heroTitleLine1: "Fresh Baked",
-            heroTitleLine2: "Every Morning",
-            heroDescription: "Experience the finest artisanal breads, pastries, and desserts crafted with love using traditional methods and the freshest ingredients.",
-            aboutTitleLine1: "Crafting Memories",
-            aboutTitleLine2: "Since 1999",
-            aboutDescription1: "At The Cake Panier, we believe that great baking starts with passion, quality ingredients, and time-honored traditions.",
-            aboutDescription2: "From our signature sourdough made with a century-old starter to our delicate French pastries, every item in our bakery tells a story of craftsmanship.",
-            founderName: "Marie & Jean-Pierre Dubois",
-            founderTitle: "Master Bakers & Founders"
-          }}>
+          <BrandProvider
+            config={{
+              name: 'Cake Panier',
+              logo: <Wheat className="h-8 w-8 text-primary" />,
+              phone: '+254 114020977',
+              heroTitleLine1: 'Fresh Baked',
+              heroTitleLine2: 'Every Morning',
+              heroDescription:
+                'Experience the finest artisanal breads, pastries, and desserts crafted with love using traditional methods and the freshest ingredients.',
+              aboutTitleLine1: 'Crafting Memories',
+              aboutTitleLine2: 'Since 1999',
+              aboutDescription1:
+                'At The Cake Panier, we believe that great baking starts with passion, quality ingredients, and time-honored traditions.',
+              aboutDescription2:
+                'From our signature sourdough made with a century-old starter to our delicate French pastries, every item in our bakery tells a story of craftsmanship.',
+              founderName: 'Marie & Jean-Pierre Dubois',
+              founderTitle: 'Master Bakers & Founders',
+            }}
+          >
             {children}
           </BrandProvider>
         </NuqsAdapter>
