@@ -15,8 +15,7 @@ export async function POST(req: NextRequest) {
 
     const payload = await req.json();
 
-    const token = await getOrganizationToken(logtoConfig, DEALIO_ORG_ID);
-    const result = await checkout(token, payload);
+    const result = await checkout(payload);
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof DealioApiError) {

@@ -6,13 +6,16 @@ import { getCatalogProduct } from '@repo/lib/dealio/catalog';
 import sanityLoader from '@repo/lib/sanity-loader';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { Button } from '@repo/ui/components/ui/button';
+import type { DealioCart, DealioCartItem, DealioProduct } from '@repo/lib/dealio/types';
 
 const notoSerif = Noto_Serif({ subsets: ['latin'], variable: '--font-noto-serif' });
 const plusJakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta' });
 
 export default async function BoxPage() {
-  let cart = null;
-  let cartItemsWithDetails = [];
+  let cart: DealioCart | null = null;
+  let cartItemsWithDetails: Array<
+    DealioCartItem & { product: DealioProduct; price: number; subtotal: number }
+  > = [];
   let total = 0;
 
   try {
@@ -20,13 +23,12 @@ export default async function BoxPage() {
     if (cart && cart.items.length > 0) {
       // Fetch details for each product in the cart
       // Note: In a real production app, we'd want a bulk fetch or the cart API would include these details.
-      cartItemsWithDetails = await Promise.all(
+      const items = await Promise.all(
         cart.items.map(async (item) => {
           try {
             const product = await getCatalogProduct(item.productId);
             const price = product.variants?.[0]?.price || 0;
             const subtotal = price * item.quantity;
-            total += subtotal;
             return {
               ...item,
               product,
@@ -39,7 +41,8 @@ export default async function BoxPage() {
           }
         })
       );
-      cartItemsWithDetails = cartItemsWithDetails.filter(Boolean);
+      cartItemsWithDetails = items.filter((item): item is NonNullable<typeof item> => item !== null);
+      total = cartItemsWithDetails.reduce((acc, item) => acc + item.subtotal, 0);
     }
   } catch (error) {
     console.error('Cart fetch failed', error);
@@ -111,7 +114,7 @@ export default async function BoxPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-12">
             {/* Cart Items List */}
             <div className="lg:col-span-2 space-y-4">
-              {cartItemsWithDetails.map((item: any) => (
+              {cartItemsWithDetails.map((item) => (
                 <div
                   key={item.id}
                   className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-[#dbc2b0]/10 flex flex-col sm:flex-row gap-6 items-center"

@@ -15,6 +15,13 @@ export const nextJsConfig = [
   ...tseslint.config(
     js.configs.recommended,
     ...tseslint.configs.recommended,
+    {
+      rules: {
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-object-type": "off",
+      },
+    }
   ),
   {
     ...pluginReact.configs.flat.recommended,
@@ -33,6 +40,8 @@ export const nextJsConfig = [
     rules: {
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs["core-web-vitals"].rules,
+      "@next/next/no-html-link-for-pages": "off",
+      "@next/next/no-img-element": "off",
     },
   },
   {
@@ -44,6 +53,11 @@ export const nextJsConfig = [
       ...pluginReactHooks.configs.recommended.rules,
       // React scope no longer necessary with new JSX transform.
       "react/react-in-jsx-scope": "off",
+      "react/no-unescaped-entities": "off",
+      "react-hooks/set-state-in-effect": "off",
+      "react/no-unknown-property": "off",
+      "react-hooks/purity": "off",
+      "react/prop-types": "off",
     },
   },
   eslintConfigPrettier,

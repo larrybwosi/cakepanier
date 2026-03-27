@@ -36,7 +36,7 @@ export const useCart = () => {
       }
       const cart: DealioCart & { items: any[] } = await res.json();
 
-      const cartItems: CartItem[] = (cart.items ?? []).map(item => ({
+      const cartItems: CartItem[] = (cart.items ?? []).map((item: any) => ({
         id: item.id,
         productId: item.productId,
         variantId: item.variantId || item.productId,
