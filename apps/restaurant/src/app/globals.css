@@ -1,5 +1,7 @@
 @import "@repo/ui/globals.css";
 
+@source "../../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}";
+
 @layer base {
   :root {
     /* Restaurant Color Palette - More elegant/modern (Charcoal & Olive) */
