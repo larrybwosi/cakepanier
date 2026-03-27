@@ -1,4 +1,4 @@
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import sync_playwright
 
 def run():
     with sync_playwright() as p:
@@ -8,14 +8,14 @@ def run():
         # Test Bakery Home
         print("Checking Bakery Home...")
         page.goto("http://localhost:3000")
-        page.wait_for_timeout(2000)  # Wait for any animations
+        page.wait_for_timeout(2000)
         page.screenshot(path="verification/bakery_home.png")
 
-        # Test Bakery Menu
-        print("Checking Bakery Menu...")
-        page.goto("http://localhost:3000/menu")
+        # Test Restaurant Home
+        print("Checking Restaurant Home...")
+        page.goto("http://localhost:3001")
         page.wait_for_timeout(2000)
-        page.screenshot(path="verification/bakery_menu.png")
+        page.screenshot(path="verification/restaurant_home.png")
 
         browser.close()
 

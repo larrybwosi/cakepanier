@@ -1,5 +1,4 @@
 import * as React from "react"
-import { Dialog } from "radix-ui"
 import { Command as CommandPrimitive } from "cmdk"
 import { Search } from "lucide-react"
 
@@ -21,7 +20,9 @@ const Command = React.forwardRef<
 ))
 Command.displayName = CommandPrimitive.displayName
 
-interface CommandDialogProps extends React.ComponentPropsWithoutRef<typeof Dialog.Root> {}
+interface CommandDialogProps extends React.ComponentPropsWithoutRef<typeof Dialog> {
+  children: React.ReactNode
+}
 
 const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
   return (

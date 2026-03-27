@@ -143,7 +143,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <GoogleAnalytics gaId="G-L0MS04RB1W" />
-      <body className={`${inter.variable} ${playfair.variable} antialiased font-body bg-gray-50`}>
+      <body className={`${inter.variable} ${playfair.variable} antialiased font-body`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

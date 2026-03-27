@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} font-body antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-body antialiased bg-background text-foreground`}>
         <NuqsAdapter>
           <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
             <BrandProvider config={{

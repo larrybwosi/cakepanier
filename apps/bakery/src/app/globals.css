@@ -1,5 +1,11 @@
 @import "@repo/ui/globals.css";
 
+@source "../../../packages/ui/src/**/*.{js,ts,jsx,tsx,mdx}";
+
+body {
+  @apply bg-background text-foreground;
+}
+
 @utility bakery-gradient {
   background: var(--gradient-warm);
 }
